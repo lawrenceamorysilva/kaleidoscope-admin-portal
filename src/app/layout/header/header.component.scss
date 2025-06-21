@@ -1,0 +1,56 @@
+.app-header {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  position: relative;
+}
+
+.navbar {
+  height: 56px;
+
+  .navbar-toggler {
+    margin-left: 0.5rem;
+  }
+}
+
+.navbar-collapse {
+  background-color: #343a40;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  position: absolute;
+  top: 56px; // below navbar
+  left: 0;
+  right: 0;
+  z-index: 1050;
+
+  @media (min-width: 992px) {
+    position: static;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .nav-link {
+    color: #467f2d; // Dimmed green
+    text-decoration: none;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #7fd856; // Brighter green on hover
+    }
+
+    &.active {
+      font-weight: 600;
+      color: #6bb742; // Kale green for active
+    }
+  }
+
+  .nav-item {
+    @media (max-width: 991.98px) {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.user-info-desktop {
+  white-space: nowrap;
+}

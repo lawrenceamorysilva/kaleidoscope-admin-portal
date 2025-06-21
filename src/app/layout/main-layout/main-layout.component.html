@@ -1,0 +1,11 @@
+<app-header (toggleSidebar)="toggleSidebar()"></app-header>
+
+<div class="layout-body">
+  <app-sidebar [class.mobile-open]="sidebarOpen"></app-sidebar>
+
+  <main class="layout-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+<app-footer></app-footer>

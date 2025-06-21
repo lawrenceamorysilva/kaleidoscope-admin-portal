@@ -1,0 +1,67 @@
+// src/styles/_variables.scss
+
+@use "sass:color";
+
+// Kaleidoscope Brand Colors
+$kale-green: #6bb742;
+$kale-yellow: #f5e253;
+$kale-blue: #47a2d9;
+$kale-red: #a11727;
+
+// Optional: a map for theme convenience
+$kale-colors: (
+  green: $kale-green,
+  yellow: $kale-yellow,
+  blue: $kale-blue,
+  red: $kale-red,
+);
+
+// Text Colors
+.text-kale-green {
+  color: $kale-green !important;
+}
+.text-kale-yellow {
+  color: $kale-yellow !important;
+}
+.text-kale-blue {
+  color: $kale-blue !important;
+}
+.text-kale-red {
+  color: $kale-red !important;
+}
+
+// Background Colors
+.bg-kale-green {
+  background-color: $kale-green !important;
+}
+.bg-kale-yellow {
+  background-color: $kale-yellow !important;
+}
+.bg-kale-blue {
+  background-color: $kale-blue !important;
+}
+.bg-kale-red {
+  background-color: $kale-red !important;
+}
+
+/* Your custom variables and styles below */
+$dark-bg: #121212;
+$light-bg: #ffffff;
+$dark-text: #e0e0e0;
+$light-text: #212529;
+
+$color-light-bg: #ffffff;
+$color-light-border: #ccc;
+$color-light-text: #333;
+$color-light-hover: #eee;
+
+$color-dark-bg: #3a3a3a;
+$color-dark-border: #555;
+$color-dark-text: #eee;
+$color-dark-hover: #4a4a4a;
+
+// Better contrast for dark mode UI components
+$color-dark-button-bg: #444; // Dark, but distinguishable
+$color-dark-button-hover: #555; // Slightly lighter on hover
+$color-dark-select-bg: #383838; // Dropdown background
+$color-dark-select-panel: #2e2e2e; // Dropdown panel

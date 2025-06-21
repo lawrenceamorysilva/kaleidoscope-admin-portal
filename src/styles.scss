@@ -1,1 +1,118 @@
-/* You can add global styles to this file, and also import other style files */
+@use "sass:color";
+
+// (Optional - if you're using Angular Material theming later)
+// @use "@angular/material" as mat;
+
+/* Third-party CSS already loaded via angular.json, so no @import needed for those */
+
+// Kaleidoscope Brand Colors
+$kale-green: #6bb742;
+$kale-yellow: #f5e253;
+$kale-blue: #47a2d9;
+$kale-red: #a11727;
+
+// Optional: a map for theme convenience
+$kale-colors: (
+  green: $kale-green,
+  yellow: $kale-yellow,
+  blue: $kale-blue,
+  red: $kale-red,
+);
+
+// Text Colors
+.text-kale-green {
+  color: $kale-green !important;
+}
+.text-kale-yellow {
+  color: $kale-yellow !important;
+}
+.text-kale-blue {
+  color: $kale-blue !important;
+}
+.text-kale-red {
+  color: $kale-red !important;
+}
+
+// Background Colors
+.bg-kale-green {
+  background-color: $kale-green !important;
+}
+.bg-kale-yellow {
+  background-color: $kale-yellow !important;
+}
+.bg-kale-blue {
+  background-color: $kale-blue !important;
+}
+.bg-kale-red {
+  background-color: $kale-red !important;
+}
+
+/* Your custom variables and styles below */
+$dark-bg: #121212;
+$light-bg: #ffffff;
+$dark-text: #e0e0e0;
+$light-text: #212529;
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background-color: $light-bg;
+  color: $light-text;
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background-color: $dark-bg;
+    color: $dark-text;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mat-mdc-table {
+    background-color: transparent !important;
+    color: #e0e0e0 !important;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    background-color: transparent !important;
+    color: #e0e0e0 !important;
+  }
+
+  .mat-mdc-row:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+}

@@ -1,0 +1,41 @@
+.app-sidebar {
+  width: 250px;
+  height: 100%;
+  background-color: #e3e4e8;
+  transition: transform 0.3s ease;
+  flex: 0 0 250px;
+  z-index: 1050;
+
+  @media (max-width: 992px) {
+    position: fixed;
+    top: 56px; // match header height
+    left: 0;
+    height: calc(100% - 56px);
+    transform: translateX(-100%);
+    box-shadow: 2px 0 6px rgba(0, 0, 0, 0.3);
+
+    &.mobile-open {
+      transform: translateX(0);
+    }
+  }
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.layout-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.layout-content {
+  flex: 1;
+  overflow-y: auto; // Allows scroll only for content if needed
+  padding: 1rem;
+}
