@@ -1,0 +1,118 @@
+<div class="container">
+  <div class="card p-2">
+    <h2 class="card-title text-left mb-4 kiwi">Shipping Cost Sandbox</h2>
+
+    <!-- NEW WRAPPER for form and table -->
+    <div class="form-and-table">
+      <!-- Form Section -->
+      <div class="form-wrapper">
+        <form>
+          <div class="mb-3">
+            <label for="postcode" class="form-label">Postcode</label>
+            <input
+              id="postcode"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              class="form-control"
+              [(ngModel)]="postcode"
+              name="postcode"
+              placeholder=""
+              autocomplete="off"
+              (keypress)="allowOnlyNumbers($event)"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="suburb" class="form-label">Suburb</label>
+            <input
+              id="suburb"
+              class="form-control"
+              [(ngModel)]="suburb"
+              (input)="onSuburbInput($event)"
+              name="suburb"
+              placeholder=""
+              autocomplete="off"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="weight" class="form-label">Weight (kg)</label>
+            <input
+              id="weight"
+              type="number"
+              inputmode="numeric"
+              class="form-control"
+              [(ngModel)]="weight"
+              name="weight"
+              placeholder=""
+              step="0.1"
+              autocomplete="off"
+            />
+          </div>
+          <button
+            type="button"
+            class="btn btn-primary w-100 submit-btn"
+            (click)="onSubmit()"
+            [disabled]="loading"
+          >
+            <span *ngIf="!loading">Submit</span>
+            <span *ngIf="loading">Submitting...</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary w-100 mt-2"
+            (click)="clearForm()"
+            [disabled]="loading"
+          >
+            Clear Form
+          </button>
+
+          <div
+            *ngIf="loading"
+            class="text-center mt-3 animate__animated animate__fadeIn animate__faster"
+          >
+            <div class="spinner-grow text-primary" role="status"></div>
+            <div class="mt-2">Loading shipping options...</div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Table Section -->
+      <div *ngIf="shippingData" class="mt-4 table-wrapper">
+        <h3 class="mb-3">Shipping Options</h3>
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th scope="col">Courier</th>
+              <th scope="col">Suburb</th>
+              <th scope="col">Cost</th>
+              <th scope="col">Default</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let option of shippingData.options">
+              <td>{{ option.courier }}</td>
+              <td>{{ option.suburb }}</td>
+              <td>{{ option.cost | currency : "USD" }}</td>
+              <td>
+                <ng-container
+                  *ngIf="option.courier === shippingData.default.courier"
+                >
+                  ✅
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div
+      *ngIf="error"
+      class="alert alert-danger mt-3 animate__animated animate__fadeIn"
+      role="alert"
+    >
+      <strong>Error:</strong> {{ error }}
+    </div>
+  </div>
+</div>

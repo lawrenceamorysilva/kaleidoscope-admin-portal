@@ -1,0 +1,198 @@
+@use "sass:color";
+
+$green: #6bb844;
+$green-hover: #5a9e3a;
+$red: #de2849;
+$blue: #2a9dd8;
+$yellow: #ffc107;
+$creamy-bg: #fff5eb;
+$white: #ffffff;
+
+/* New dark mode colors */
+$dark-bg: #121212;
+$dark-card-bg: #1e1e1e;
+$dark-text: #e0e0e0;
+$dark-border: #444;
+$dark-blue: #375a7f;
+$dark-red: #b53849;
+
+/* Bootstrap overrides */
+
+.container {
+  // max-width: 800px;
+  width: 100%;
+  padding: 10px;
+  max-width: none;
+  background-color: #f8f9fa; // slightly off-white to show separation
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  background-color: transparent; // remove inner white
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+}
+
+.form-control {
+  transition: border-color 0.3s ease;
+  background-color: $white;
+  color: #212529;
+  border: 1px solid #ced4da;
+
+  &:focus {
+    border-color: $yellow;
+    box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+    background-color: $white;
+    color: #212529;
+  }
+}
+
+.form-aligned-left {
+  max-width: 400px; // limit form width
+  width: 100%;
+}
+
+.submit-btn {
+  background-color: $green;
+  transition: background-color 0.2s ease;
+  color: $white;
+
+  &:hover {
+    background-color: $green-hover;
+  }
+}
+
+.alert-danger {
+  background-color: $red;
+  color: $white;
+  border-color: color.adjust($red, $lightness: -10%);
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.table {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: $white;
+  color: #212529;
+
+  th,
+  td {
+    vertical-align: middle;
+  }
+
+  .table-dark {
+    background-color: $blue;
+    color: $white;
+  }
+}
+
+.list-group-item {
+  border-radius: 8px;
+  margin-bottom: 5px;
+  background-color: $white;
+  color: #212529;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #1e1e1e; // lighter dark box
+    color: $dark-text;
+    box-shadow: 0 4px 16px rgba(255, 255, 255, 0.05);
+  }
+
+  .card {
+    background-color: transparent;
+    color: inherit;
+    box-shadow: none;
+  }
+
+  .form-control {
+    background-color: #2c2c2c;
+    color: $dark-text;
+    border: 1px solid $dark-border;
+
+    &:focus {
+      border-color: $yellow;
+      box-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
+      background-color: #2c2c2c;
+      color: $dark-text;
+    }
+  }
+
+  .submit-btn {
+    background-color: $dark-blue;
+    color: $white;
+
+    &:hover {
+      background-color: color.adjust($dark-blue, $lightness: -10%);
+    }
+  }
+
+  .alert-danger {
+    background-color: $dark-red;
+    border-color: color.adjust($dark-red, $lightness: -10%);
+    color: $white;
+  }
+
+  .table {
+    background-color: transparent;
+    color: $dark-text;
+
+    .table-dark {
+      background-color: #212529;
+      color: $dark-text;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #333;
+    }
+  }
+
+  .list-group-item {
+    background-color: $dark-card-bg;
+    color: $dark-text;
+  }
+}
+
+.kiwi {
+  color: #6bb742;
+}
+
+.form-wrapper {
+  max-width: 400px; // fixed width for the form
+  width: 100%;
+}
+
+.form-and-table {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .form-wrapper {
+    max-width: 100%;
+  }
+
+  .table-wrapper {
+    width: 100%;
+  }
+
+  @media (min-width: 992px) {
+    // large screens and up
+    flex-direction: row;
+    align-items: flex-start;
+
+    .form-wrapper {
+      flex: 0 0 400px; // fixed width for form
+    }
+
+    .table-wrapper {
+      flex: 1;
+      margin-top: 0 !important;
+      padding-left: 2rem;
+    }
+  }
+}
