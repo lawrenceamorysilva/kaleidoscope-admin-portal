@@ -1,6 +1,6 @@
 <mat-card>
   <div class="header-row">
-    <h2>Neto Products</h2>
+    <h2>Products</h2>
     <button (click)="toggleSearch()" class="btn btn-sm btn-outline-primary">
       {{ showSearch ? "Hide Search" : "Search Products" }}
     </button>
@@ -153,8 +153,8 @@
     </div>
 
     <mat-paginator
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 25]"
+      [pageSize]="500"
+      [pageSizeOptions]="[500,600]"
       showFirstLastButtons
     ></mat-paginator>
   </div>

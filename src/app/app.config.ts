@@ -21,6 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
 
     // ✅ Register both standalone components
-    importProvidersFrom(MainLayoutComponent, SandboxComponent),
+    //importProvidersFrom(MainLayoutComponent, SandboxComponent),
   ],
 };
