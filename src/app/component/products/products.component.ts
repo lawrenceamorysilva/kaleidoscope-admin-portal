@@ -41,6 +41,7 @@ export class ProductsComponent implements AfterViewInit {
     'brand',
     'stock_status',
     'dropship_price',
+    'surcharge',
     'qty',
     'shipping_weight',
     'shipping_length',
@@ -60,9 +61,23 @@ export class ProductsComponent implements AfterViewInit {
         this.dataSource.data = data;
 
         this.dataSource.sortingDataAccessor = (item, property) => {
-          const value = item[property];
-          return typeof value === 'string' ? value.toLowerCase() : value;
+          switch (property) {
+            case 'dropship_price':
+            case 'surcharge':
+            case 'qty':
+            case 'shipping_weight':
+            case 'shipping_length':
+            case 'shipping_width':
+            case 'shipping_height':
+              return parseFloat(item[property]) || 0;
+            case 'updated_at':
+              return new Date(item.updated_at);
+            default:
+              const value = item[property];
+              return typeof value === 'string' ? value.toLowerCase() : value;
+          }
         };
+
 
         // Custom filter logic
         this.dataSource.filterPredicate = (
@@ -77,6 +92,10 @@ export class ProductsComponent implements AfterViewInit {
           // Normalize and format price fields
           const dropshipPrice = parseFloat(data.dropship_price).toFixed(2);
           const dropshipPriceWithSymbol = `$${dropshipPrice}`;
+
+          const surcharge = parseFloat(data.surcharge).toFixed(2);
+          const surchargeWithSymbol = `$${surcharge}`;
+
 
           const price = parseFloat(data.price).toFixed(2);
           const priceWithSymbol = `$${price}`;
@@ -98,7 +117,10 @@ export class ProductsComponent implements AfterViewInit {
             dropshipPriceWithSymbol.includes(term) || // ✅ $14.00 style
             price.includes(term) ||
             priceWithSymbol.includes(term) ||
+            surcharge.includes(term) || // 👈 new
+            surchargeWithSymbol.includes(term) ||
             String(data.dropship_price).toLowerCase().includes(term) ||
+            String(data.surcharge).toLowerCase().includes(term) ||
             String(data.qty).toLowerCase().includes(term) ||
             String(data.shipping_weight).toLowerCase().includes(term) ||
             String(data.shipping_length).toLowerCase().includes(term) ||
