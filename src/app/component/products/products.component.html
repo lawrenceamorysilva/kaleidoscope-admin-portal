@@ -121,6 +121,21 @@
           </td>
         </ng-container>
 
+        <!-- Qty Buffer Column -->
+        <ng-container matColumnDef="qty_buffer">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="col-qty-buffer"
+            mat-sort-header="qty_buffer"
+          >
+            Buffer
+          </th>
+          <td mat-cell *matCellDef="let product" class="col-qty-buffer">
+            {{ product.qty_buffer }}
+          </td>
+        </ng-container>
+
         <!-- Shipping Weight -->
         <ng-container matColumnDef="shipping_weight">
           <th mat-header-cell *matHeaderCellDef class="col-weight">Weight</th>

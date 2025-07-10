@@ -43,6 +43,7 @@ export class ProductsComponent implements AfterViewInit {
     'dropship_price',
     'surcharge',
     'qty',
+    'qty_buffer',
     'shipping_weight',
     'shipping_length',
     'shipping_width',
@@ -122,6 +123,7 @@ export class ProductsComponent implements AfterViewInit {
             String(data.dropship_price).toLowerCase().includes(term) ||
             String(data.surcharge).toLowerCase().includes(term) ||
             String(data.qty).toLowerCase().includes(term) ||
+            String(data.qty_buffer).toLowerCase().includes(term) ||
             String(data.shipping_weight).toLowerCase().includes(term) ||
             String(data.shipping_length).toLowerCase().includes(term) ||
             String(data.shipping_width).toLowerCase().includes(term) ||
