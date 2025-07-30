@@ -1,6 +1,6 @@
 <mat-card>
   <div class="header-row">
-    <h2>Products</h2>
+    <h2>{{ isDropship ? 'Dropshipping Products' : 'Non-Dropshipping Products' }}</h2>
     <button (click)="toggleSearch()" class="btn btn-sm btn-outline-primary">
       {{ showSearch ? "Hide Search" : "Search Products" }}
     </button>

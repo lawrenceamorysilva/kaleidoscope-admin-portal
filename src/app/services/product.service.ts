@@ -30,7 +30,8 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getNetoProducts(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/neto-products`);
+  getNetoProducts(params?: { dropship?: string | null }) {
+    const query = params?.dropship != null ? `?dropship=${params.dropship}` : '';
+    return this.http.get<any[]>(`${this.apiUrl}/neto-products${query}`);
   }
 }

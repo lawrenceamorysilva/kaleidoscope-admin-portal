@@ -17,6 +17,14 @@ export const routes: Routes = [
             (m) => m.ProductsComponent
           ),
       },
+      {
+        path: 'products-hidden',
+        loadComponent: () =>
+          import('./component/products/products.component').then(
+            (m) => m.ProductsComponent
+          ),
+        data: { title: 'Non-Dropship Products' },
+      }
     ],
   },
   // { path: '**', redirectTo: 'sandbox' },

@@ -8,6 +8,7 @@ import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -51,13 +52,42 @@ export class ProductsComponent implements AfterViewInit {
     'updated_at',
   ];
 
+  isDropship = true;
+
+
   constructor(
     private productService: ProductService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.productService.getNetoProducts().subscribe({
+
+    this.loading = true;
+
+    const routePath = this.route.routeConfig?.path;
+    this.isDropship = routePath !== 'products-hidden';
+
+    const dropshipParam = routePath === 'products-hidden' ? 'No' : 'Yes';
+
+    this.displayedColumns = [
+      'sku',
+      'name',
+      'brand',
+      'stock_status',
+      ...(this.isDropship
+        ? ['dropship_price', 'surcharge', 'qty', 'qty_buffer']
+        : []),
+      'shipping_weight',
+      'shipping_length',
+      'shipping_width',
+      'shipping_height',
+      'updated_at',
+    ];
+
+
+
+    this.productService.getNetoProducts({ dropship: dropshipParam }).subscribe({
       next: (data) => {
         this.dataSource.data = data;
 
