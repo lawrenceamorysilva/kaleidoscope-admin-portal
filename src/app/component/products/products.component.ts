@@ -26,6 +26,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./products.component.scss'],
   providers: [DatePipe],
 })
+
 export class ProductsComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('searchInput') searchInput!: ElementRef;
@@ -53,7 +54,6 @@ export class ProductsComponent implements AfterViewInit {
   ];
 
   isDropship = true;
-
 
   constructor(
     private productService: ProductService,
