@@ -16,7 +16,6 @@ export class MainLayoutComponent {
   sidebarOpen = false;
 
   toggleSidebar() {
-    console.log('MANGO!!!');
     this.sidebarOpen = !this.sidebarOpen;
   }
 
