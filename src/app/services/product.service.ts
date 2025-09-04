@@ -19,7 +19,7 @@ export class ProductService {
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable} from 'rxjs';
 import { environment } from '@environments/environment';
 
 @Injectable({
@@ -32,6 +32,9 @@ export class ProductService {
 
   getNetoProducts(params?: { dropship?: string | null }) {
     const query = params?.dropship != null ? `?dropship=${params.dropship}` : '';
-    return this.http.get<any[]>(`${this.apiUrl}/neto-products${query}`);
+    return this.http
+      .get<{ version: number; products: any[] }>(`${this.apiUrl}/neto-products${query}`)
+      .pipe(map(res => res.products || []));
   }
+
 }
