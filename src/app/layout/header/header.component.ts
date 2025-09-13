@@ -1,5 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { AdminAuthService } from '@app/services/admin-auth.service';
+
 
 @Component({
   selector: 'app-header',
@@ -13,6 +15,14 @@ export class HeaderComponent {
 
   @Output() toggleSidebar = new EventEmitter<void>();
 
+  constructor(private adminAuthService: AdminAuthService, private router: Router) {
+
+  }
+
+  get currentUserName() {
+    return this.adminAuthService.currentUser?.name || 'Guest';
+  }
+
   toggleNav() {
     this.navCollapsed = !this.navCollapsed;
   }
@@ -22,9 +32,14 @@ export class HeaderComponent {
   }
 
   emitSidebarToggle() {
-    console.log('KIWI!!!');
     this.toggleSidebar.emit();
   }
 
-  //  @Output() toggleSidebar = new EventEmitter<void>();
+  logout() {
+    this.adminAuthService.logout().subscribe(() => {
+      this.router.navigate(['/login'], { replaceUrl: true });
+    });
+  }
+
+
 }

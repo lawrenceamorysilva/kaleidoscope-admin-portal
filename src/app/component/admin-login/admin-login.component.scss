@@ -1,0 +1,148 @@
+@use "sass:color";
+
+/* === Brand Palette === */
+$kale-green: #6bb742;
+$kale-yellow: #f5e253;
+$kale-blue: #47a2d9;
+$kale-red: #a11727;
+
+/* Wrapper */
+.login-wrapper {
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center; // desktop stays centered
+  padding: 2rem 1rem;
+}
+
+/* Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: none;
+  z-index: 1;
+  animation: fadeInUp 0.6s ease-out;
+
+  /* 🚀 mobile & tablet: pull the card higher */
+  @media (max-width: 1024px) {
+    position: relative;
+    top: -8vh; // shift upward about 8% of screen height
+  }
+
+  @media (max-width: 576px) {
+    top: -12vh; // pull even higher on iPhones
+  }
+}
+
+/* Logo */
+.logo {
+  max-height: 60px;
+
+  @media (max-width: 576px) {
+    max-height: 50px;
+  }
+}
+
+/* Text */
+.ks-text-primary {
+  color: $kale-green !important;
+}
+
+/* Buttons */
+.ks-btn-primary {
+  background-color: $kale-green;
+  border: none;
+  color: #fff;
+  transition: background-color 0.25s ease;
+
+  &:hover {
+    background-color: color.adjust($kale-green, $lightness: -8%);
+  }
+
+  &:disabled {
+    background-color: color.adjust($kale-green, $lightness: 25%);
+    cursor: not-allowed;
+  }
+}
+
+/* Links */
+.ks-link {
+  color: $kale-blue;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    color: color.adjust($kale-blue, $lightness: -10%);
+    text-decoration: underline;
+  }
+}
+
+/* Alerts */
+.ks-alert-danger {
+  background-color: rgba($kale-red, 0.08);
+  color: $kale-red;
+  border: 1px solid $kale-red;
+  padding: 0.5rem 1rem;
+}
+
+/* Toggle password button */
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 36px;
+  background: transparent;
+  border: none;
+  color: #888;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.wave {
+  position: absolute;
+  bottom: -40px;
+  left: 0;
+  width: 200%;
+  height: 200px;
+  background: linear-gradient(
+      90deg,
+      $kale-green,
+      $kale-yellow,
+      $kale-blue,
+      $kale-green
+  );
+  background-size: 200% 100%;
+  border-radius: 50% 50% 0 0;
+
+  /* Two animations: one scrolls sideways, one makes it bob */
+  animation:
+    waveScroll 10s linear infinite,
+    waveBob 6s ease-in-out infinite alternate;
+}
+
+@keyframes waveScroll {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes waveBob {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-20px); // rises up like a swell
+  }
+}
+
+
+.login-card .form-label {
+  color: #212529; // Bootstrap default text color
+}

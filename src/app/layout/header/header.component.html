@@ -88,8 +88,8 @@
 
     <!-- Desktop User Info -->
     <div class="d-none d-lg-flex align-items-center user-info-desktop ms-4">
-      <span class="me-3">Welcome, Lawrence</span>
-      <button class="btn btn-outline-light btn-sm">Logout</button>
+      <span class="me-3">Welcome, {{ currentUserName }}</span>
+      <button class="btn btn-outline-light btn-sm" (click)="logout()">Logout</button>
     </div>
   </div>
 </header>
