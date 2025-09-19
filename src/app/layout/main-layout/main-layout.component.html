@@ -1,11 +1,61 @@
-<app-header (toggleSidebar)="toggleSidebar()"></app-header>
+<!-- Header -->
+<header class="navbar navbar-expand-lg navbar-dark bg-dark px-3 app-header">
+  <a class="navbar-brand me-auto" routerLink="/">
+    Dropshipping Administrator Portal
+  </a>
 
+  <!-- Mobile toggle -->
+  <button class="navbar-toggler" type="button" (click)="toggleSidebar()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</header>
+
+<!-- Body -->
 <div class="layout-body">
-  <app-sidebar [class.mobile-open]="sidebarOpen"></app-sidebar>
+  <!-- Sidebar -->
+  <aside class="app-sidebar" [class.mobile-open]="sidebarOpen">
+    <div class="sidebar-inner d-flex flex-column h-100 p-3">
+      <!-- Top nav links -->
+      <nav class="nav flex-column mb-3">
+        <a
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+        >
+          Home
+        </a>
+        <a routerLink="/sandbox" routerLinkActive="active" class="nav-link">
+          Shipping Cost Sandbox
+        </a>
+        <a routerLink="/products" routerLinkActive="active" class="nav-link">
+          Dropshipping Products
+        </a>
+        <a routerLink="/products-hidden" routerLinkActive="active" class="nav-link">
+          Non-Dropshipping Products
+        </a>
+      </nav>
 
+      <!-- Push user + logout to bottom -->
+      <div class="mt-auto sidebar-user d-flex align-items-center justify-content-between pt-3 border-top">
+        <span class="user-name text-light small">{{ currentUserName }}</span>
+        <button class="logout-btn" (click)="logout()" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+
+
+
+
+  <!-- Main Content -->
   <main class="layout-content">
     <router-outlet></router-outlet>
   </main>
 </div>
 
-<app-footer></app-footer>
+<!-- Footer -->
+<footer class="app-footer">© {{ currentYear }} Kaleidoscope Australasia</footer>
+

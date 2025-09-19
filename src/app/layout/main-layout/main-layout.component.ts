@@ -1,19 +1,23 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { FooterComponent } from '../footer/footer.component';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AdminAuthService } from '@app/services/admin-auth.service';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [HeaderComponent, SidebarComponent, FooterComponent, RouterOutlet],
+  imports: [CommonModule, RouterModule, RouterOutlet],
   templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.scss'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // ✅ Add this line
+  styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent {
   sidebarOpen = false;
+
+  constructor(private adminAuthService: AdminAuthService) {}
+
+  get currentUserName() {
+    return this.adminAuthService.currentUser?.name || 'Guest';
+  }
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
@@ -21,5 +25,15 @@ export class MainLayoutComponent {
 
   closeSidebar() {
     this.sidebarOpen = false;
+  }
+
+  get currentYear(): number {
+    return new Date().getFullYear();
+  }
+
+  logout() {
+    this.adminAuthService.logout().subscribe(() => {
+      window.location.href = '/login'; // or Router navigate
+    });
   }
 }
