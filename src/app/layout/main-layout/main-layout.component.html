@@ -1,6 +1,13 @@
 <!-- Header -->
 <header class="navbar navbar-expand-lg navbar-dark bg-dark px-3 app-header">
-  <a class="navbar-brand me-auto" routerLink="/">
+  <a class="navbar-brand me-auto d-flex align-items-center text-kale-yellow" routerLink="/" (click)="onLogoClick()">
+    <!-- Small logo for mobile -->
+    <img
+      src="assets/images/kal-logo-small.png"
+      alt="Kaleidoscope"
+      class="logo-icon me-2"
+    />
+
     Dropshipping Administrator Portal
   </a>
 
@@ -16,13 +23,8 @@
   <aside class="app-sidebar" [class.mobile-open]="sidebarOpen">
     <div class="sidebar-inner d-flex flex-column h-100 p-3">
       <!-- Top nav links -->
-      <nav class="nav flex-column mb-3">
-        <a
-          routerLink="/"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="nav-link"
-        >
+      <nav class="nav flex-column mb-3" (click)="closeSidebarOnMobile()">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
           Home
         </a>
         <a routerLink="/sandbox" routerLinkActive="active" class="nav-link">
@@ -36,13 +38,20 @@
         </a>
       </nav>
 
+
       <!-- Push user + logout to bottom -->
-      <div class="mt-auto sidebar-user d-flex align-items-center justify-content-between pt-3 border-top">
-        <span class="user-name text-light small">{{ currentUserName }}</span>
-        <button class="logout-btn" (click)="logout()" title="Logout">
-          <i class="fas fa-sign-out-alt"></i>
+      <div class="mt-auto sidebar-user d-flex align-items-center pt-3 border-top">
+        <span class="small me-2">
+          Logged in as
+          <span class="text-kale-green">{{ currentUserName }}</span>
+        </span>
+        <button class="logout-btn btn btn-sm btn-outline-light" (click)="logout()" title="Logout">
+          <i class="bi bi-box-arrow-right text-kale-red"></i>
         </button>
       </div>
+
+
+
     </div>
   </aside>
 
@@ -57,5 +66,5 @@
 </div>
 
 <!-- Footer -->
-<footer class="app-footer">© {{ currentYear }} Kaleidoscope Australasia</footer>
+<footer class="app-footer text-kale-blue">© {{ currentYear }} Kaleidoscope Australasia</footer>
 

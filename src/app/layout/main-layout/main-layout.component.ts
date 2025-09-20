@@ -19,6 +19,20 @@ export class MainLayoutComponent {
     return this.adminAuthService.currentUser?.name || 'Guest';
   }
 
+  closeSidebarOnMobile() {
+    if (window.innerWidth <= 992) { // same breakpoint as your CSS
+      this.sidebarOpen = false;
+    }
+  }
+
+  onLogoClick() {
+    // Only toggle on mobile (below lg breakpoint)
+    if (window.innerWidth < 992) {
+      this.sidebarOpen = !this.sidebarOpen;
+    }
+  }
+
+
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }
