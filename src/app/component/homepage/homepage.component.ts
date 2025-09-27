@@ -85,14 +85,17 @@ export class HomepageComponent implements OnInit {
   }
 
 
-  downloadAndClose(event: Event) {
-    // allow the browser to do the download
-    // then close modal
-    this.exportReady = false;
-    this.downloadUrl = '';
-    this.showExportModal = false;
-  }
+  downloadAndRefresh(event: Event) {
+    // Let browser handle the download
+    setTimeout(() => {
+      this.exportReady = false;
+      this.downloadUrl = '';
+      this.showExportModal = false;
 
+      // Call your existing method to reload orders
+      this.fetchOrders();
+    }, 500); // delay so the download initializes first
+  }
 
 
 

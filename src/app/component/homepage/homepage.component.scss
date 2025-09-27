@@ -19,6 +19,9 @@
   --accent-color: #388E3C;
   --zebra-even: color-mix(in srgb, var(--card-bg) 95%, #ffffff 5%);
   --zebra-hover: color-mix(in srgb, var(--card-bg) 90%, #ffffff 10%);
+  --empty-bg: #fafafa;
+  --empty-text: #666;
+  --empty-border: #e5e5e5;
 
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -41,6 +44,9 @@
     --accent-color: #A5D6A7;
     --zebra-even: #222;
     --zebra-hover: #333;
+    --empty-bg: #1E1E1E;
+    --empty-text: #ccc;
+    --empty-border: #333;
   }
 }
 
@@ -69,11 +75,16 @@
       cursor: pointer;
       transition: all 0.2s;
 
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
       &.export-btn {
         background-color: var(--toggle-btn-bg);
         color: var(--header-text);
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: var(--toggle-btn-hover);
         }
       }
@@ -82,7 +93,7 @@
         background-color: #555;
         color: #fff;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background-color: #777;
         }
       }
@@ -145,7 +156,6 @@
     }
   }
 
-
   .order-items {
     padding: 0.75rem 1rem;
 
@@ -176,12 +186,26 @@
   }
 }
 
-/* Loading + empty */
-.loading, .empty {
+/* Loading */
+.loading {
   text-align: center;
   color: #6B7280;
   font-size: 1rem;
   padding: 2rem;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--empty-text);
+  font-size: 1.1rem;
+  background: var(--empty-bg);
+  border: 1px solid var(--empty-border);
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 400px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 /* Mobile responsiveness */
@@ -213,8 +237,6 @@
     gap: 0.3rem;
   }
 }
-
-
 
 .export-modal {
   position: fixed;
@@ -275,11 +297,47 @@
         color: #fff;
 
         &:hover {
-          background-color: #2e7e32; // darkened accent color manually
+          background-color: #2e7e32; /* darkened accent color manually */
         }
       }
     }
   }
 }
 
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--accent-color);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.progress-bar {
+  width: 80%;          /* smaller than full width */
+  max-width: 300px;    /* cap size */
+  height: 6px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px auto;   /* centered */
+}
+
+.progress-fill {
+  width: 40%;
+  height: 100%;
+  background: #28a745;
+  animation: progressMove 1.5s linear infinite;
+}
+
+@keyframes progressMove {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
