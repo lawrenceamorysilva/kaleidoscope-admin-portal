@@ -10,7 +10,7 @@ import { DropshipOrderService } from '@app/services/dropship-order.service';
   styleUrls: ['./homepage.component.scss']
 })
 export class HomepageComponent implements OnInit {
-  orders: any[] = [];
+  groupedOrders: any[] = [];
   loading = true;
 
   allExpanded = false;
@@ -28,7 +28,7 @@ export class HomepageComponent implements OnInit {
   private fetchOrders(): void {
     this.dropshipOrderService.getOrders().subscribe({
       next: (data) => {
-        this.orders = data;
+        this.groupedOrders = this.groupByRetailer(data);
         this.loading = false;
       },
       error: (err) => {
@@ -38,33 +38,57 @@ export class HomepageComponent implements OnInit {
     });
   }
 
-  toggleAll() {
-    this.allExpanded = !this.allExpanded;
-    this.orders.forEach(order => (order.expanded = this.allExpanded));
+  private groupByRetailer(orders: any[]): any[] {
+    const map = new Map<string, any>();
+    for (const order of orders) {
+      const retailer = order.username || 'Unknown Retailer';
+      if (!map.has(retailer)) {
+        // ✅ Groups start expanded by default
+        map.set(retailer, { retailer, expanded: true, orders: [] });
+      }
+      // ✅ Orders start collapsed by default
+      map.get(retailer).orders.push({ ...order, expanded: false });
+    }
+    return Array.from(map.values());
   }
 
+
+
+  toggleAll() {
+    this.allExpanded = !this.allExpanded;
+
+    this.groupedOrders.forEach(group => {
+      group.expanded = this.allExpanded;
+
+      group.orders.forEach((order: any) => {
+        order.expanded = this.allExpanded;
+      });
+    });
+  }
+
+
+
+
   onExport(): void {
-    if (!this.orders.length) {
+    if (!this.groupedOrders.length) {
       alert('No orders to export');
       return;
     }
     this.showExportModal = true;
   }
 
-
-
   confirmExport() {
-    if (!this.orders.length) return;
+    const flatOrders = this.groupedOrders.flatMap(g => g.orders);
+    if (!flatOrders.length) return;
 
     this.exporting = true;
 
-    this.dropshipOrderService.exportOrders(this.orders).subscribe({
+    this.dropshipOrderService.exportOrders(flatOrders).subscribe({
       next: (res) => {
-        // URL returned by Laravel
         this.downloadUrl = res.downloadUrl;
         this.exportReady = true;
         this.exporting = false;
-        this.showExportModal = false; // close "Are you sure?" modal
+        this.showExportModal = false;
       },
       error: (err) => {
         console.error('Export failed', err);
@@ -79,25 +103,17 @@ export class HomepageComponent implements OnInit {
     this.showExportModal = false;
     this.exportReady = false;
     this.downloadUrl = '';
-
-    // Refresh homepage/orders after export
     this.fetchOrders();
   }
 
-
   downloadAndRefresh(event: Event) {
-    // Let browser handle the download
     setTimeout(() => {
       this.exportReady = false;
       this.downloadUrl = '';
       this.showExportModal = false;
-
-      // Call your existing method to reload orders
       this.fetchOrders();
-    }, 500); // delay so the download initializes first
+    }, 500);
   }
-
-
 
   cancelExport() {
     this.showExportModal = false;
@@ -107,4 +123,7 @@ export class HomepageComponent implements OnInit {
     window.location.reload();
   }
 
+  get totalOrders(): number {
+    return this.groupedOrders.reduce((sum, group) => sum + group.orders.length, 0);
+  }
 }

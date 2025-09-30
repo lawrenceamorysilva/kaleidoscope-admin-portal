@@ -5,18 +5,17 @@
       <button
         class="toggle-all-btn"
         (click)="toggleAll()"
-        [disabled]="orders.length === 0">
+        [disabled]="groupedOrders.length === 0">
         {{ allExpanded ? 'Collapse All' : 'Expand All' }}
       </button>
 
       <button
         class="export-btn"
         (click)="onExport()"
-        [disabled]="orders.length === 0">
+        [disabled]="groupedOrders.length === 0">
         Export Orders
       </button>
     </div>
-
   </div>
 
   <div *ngIf="loading" class="loading">
@@ -24,84 +23,87 @@
     <p>Loading orders...</p>
   </div>
 
-
-  <ng-container *ngIf="!loading && orders.length > 0">
-    <div *ngFor="let order of orders" class="order-card" [class.expanded]="order.expanded">
-      <div class="order-header" (click)="order.expanded = !order.expanded">
-        <div class="order-summary">
-
-          <div class="line-1">
-            <span *ngIf="order.username"><strong>User:</strong> {{ order.username }}</span>
-            <span *ngIf="order.po_number"><strong>PO #:</strong> {{ order.po_number }}</span>
-            <span *ngIf="order.first_name || order.last_name"><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}</span>
-          </div>
-
-          <div class="line-2">
-            <span *ngIf="order.shipping_line1">
-              <strong>Address:</strong> {{ order.shipping_line1 }}
-              <span *ngIf="order.shipping_line2">, {{ order.shipping_line2 }}</span>
-            </span>
-            <span *ngIf="order.suburb"><strong>Suburb:</strong> {{ order.suburb }}</span>
-            <span *ngIf="order.state"><strong>State:</strong> {{ order.state }}</span>
-            <span *ngIf="order.postcode"><strong>Postcode:</strong> {{ order.postcode }}</span>
-          </div>
-
-          <div class="line-3">
-            <span *ngIf="order.product_total != null"><strong>Product Total:</strong> {{ order.product_total | currency:'USD' }}</span>
-            <span *ngIf="order.dropship_fee != null"><strong>Dropship Fee:</strong> {{ order.dropship_fee | currency:'USD' }}</span>
-            <span *ngIf="order.min_order_fee != null"><strong>Min Order Fee:</strong> {{ order.min_order_fee | currency:'USD' }}</span>
-            <span *ngIf="order.shipping_total != null"><strong>Shipping:</strong> {{ order.shipping_total | currency:'USD' }}</span>
-            <span *ngIf="order.grand_total != null"><strong>Grand Total:</strong> {{ order.grand_total | currency:'USD' }}</span>
-          </div>
-
+  <ng-container *ngIf="!loading && groupedOrders.length > 0">
+    <div *ngFor="let group of groupedOrders" class="retailer-group" [class.expanded]="group.expanded">
+      <div class="retailer-header" (click)="group.expanded = !group.expanded">
+        <div class="retailer-summary">
+          <strong>{{ group.retailer }}</strong>
+          <span class="order-count">({{ group.orders.length }} orders)</span>
         </div>
-
-        <div class="toggle-icon">{{ order.expanded ? '-' : '+' }}</div>
+        <div class="toggle-icon">{{ group.expanded ? '-' : '+' }}</div>
       </div>
 
-      <div class="order-items" *ngIf="order.expanded">
-        <table class="items-table">
-          <thead>
-          <tr>
-            <th>SKU</th>
-            <th>Name</th>
-            <th>Qty</th>
-            <th>Price</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let item of order.items">
-            <td>{{ item.sku }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.qty }}</td>
-            <td>{{ item.price | currency:'USD' }}</td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="retailer-orders" *ngIf="group.expanded">
+        <div *ngFor="let order of group.orders" class="order-card" [class.expanded]="order.expanded">
+          <div class="order-header" (click)="order.expanded = !order.expanded">
+            <div class="order-summary">
+              <div class="line-1">
+                <span *ngIf="order.po_number"><strong>PO #:</strong> {{ order.po_number }}</span>
+                <span *ngIf="order.first_name || order.last_name"><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}</span>
+              </div>
+
+              <div class="line-2">
+                <span *ngIf="order.shipping_line1">
+                  <strong>Address:</strong> {{ order.shipping_line1 }}
+                  <span *ngIf="order.shipping_line2">, {{ order.shipping_line2 }}</span>
+                </span>
+                <span *ngIf="order.suburb"><strong>Suburb:</strong> {{ order.suburb }}</span>
+                <span *ngIf="order.state"><strong>State:</strong> {{ order.state }}</span>
+                <span *ngIf="order.postcode"><strong>Postcode:</strong> {{ order.postcode }}</span>
+              </div>
+
+              <div class="line-3">
+                <span *ngIf="order.product_total != null"><strong>Product Total:</strong> {{ order.product_total | currency:'USD' }}</span>
+                <span *ngIf="order.dropship_fee != null"><strong>Dropship Fee:</strong> {{ order.dropship_fee | currency:'USD' }}</span>
+                <span *ngIf="order.min_order_fee != null"><strong>Min Order Fee:</strong> {{ order.min_order_fee | currency:'USD' }}</span>
+                <span *ngIf="order.shipping_total != null"><strong>Shipping:</strong> {{ order.shipping_total | currency:'USD' }}</span>
+                <span *ngIf="order.grand_total != null"><strong>Grand Total:</strong> {{ order.grand_total | currency:'USD' }}</span>
+              </div>
+            </div>
+            <div class="toggle-icon small">{{ order.expanded ? '-' : '+' }}</div>
+          </div>
+
+          <div class="order-items" *ngIf="order.expanded">
+            <table class="items-table">
+              <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Price</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of order.items">
+                <td>{{ item.sku }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.qty }}</td>
+                <td>{{ item.price | currency:'USD' }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </ng-container>
 
-  <div *ngIf="!loading && orders.length === 0" class="empty">
+  <div *ngIf="!loading && groupedOrders.length === 0" class="empty">
     No orders to Export.
   </div>
 </div>
 
-
-
 <!-- Export Modal -->
 <div class="export-modal" *ngIf="showExportModal">
   <div class="modal-content">
-    <!-- Step 1: Confirm -->
     <ng-container *ngIf="!exporting && !exportReady">
-      <p>Are you sure you want to export {{ orders.length }} orders?</p>
+      <p>Are you sure you want to export {{ totalOrders }} orders?</p>
       <div class="modal-actions">
         <button class="btn-no" (click)="cancelExport()">No</button>
         <button class="btn-yes" (click)="confirmExport()">Yes</button>
       </div>
     </ng-container>
 
-    <!-- Step 2: Loading -->
     <ng-container *ngIf="exporting">
       <p>Preparing export, please wait...</p>
       <div class="progress-bar">
@@ -109,7 +111,6 @@
       </div>
     </ng-container>
 
-    <!-- Step 3: Ready -->
     <ng-container *ngIf="exportReady && !exporting">
       <p>CSV is ready! Click below to download.</p>
       <div class="modal-actions">
@@ -124,11 +125,11 @@
 
 
 <!-- Export Ready Modal -->
-<div class="export-modal" *ngIf="exportReady">
+<div class="export-modal" *ngIf="exportReady && !showExportModal">
   <div class="modal-content">
-    <p>Order Export CSV file is ready for download.</p>
+    <p>Your CSV file is ready for download.</p>
     <div class="modal-actions">
-      <a class="btn btn-success"
+      <a class="btn-download"
          [href]="downloadUrl"
          download
          (click)="downloadAndRefresh($event)">
@@ -137,7 +138,4 @@
     </div>
   </div>
 </div>
-
-
-
 
