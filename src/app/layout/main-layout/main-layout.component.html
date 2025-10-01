@@ -7,7 +7,6 @@
       alt="Kaleidoscope"
       class="logo-icon me-2"
     />
-
     Dropshipping Administrator Portal
   </a>
 
@@ -25,16 +24,17 @@
       <!-- Top nav links -->
       <nav class="nav flex-column mb-3" (click)="closeSidebarOnMobile()">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
-          Home
+          Dropship Order Exporter
+        </a>
+
+        <a routerLink="/products" routerLinkActive="active" class="nav-link">
+          Dropship Products
+        </a>
+        <a routerLink="/products-hidden" routerLinkActive="active" class="nav-link">
+          Non-Dropship Products
         </a>
         <a routerLink="/sandbox" routerLinkActive="active" class="nav-link">
           Shipping Cost Sandbox
-        </a>
-        <a routerLink="/products" routerLinkActive="active" class="nav-link">
-          Dropshipping Products
-        </a>
-        <a routerLink="/products-hidden" routerLinkActive="active" class="nav-link">
-          Non-Dropshipping Products
         </a>
       </nav>
 
