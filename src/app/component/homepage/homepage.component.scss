@@ -39,7 +39,7 @@
     --header-text: #fff;
     --toggle-btn-bg: #388E3C;
     --toggle-btn-hover: #43A047;
-    --accent-color: #81C784;
+    --accent-color: #388E3C;
 
     --zebra-even: #222;
     --zebra-hover: #333;
@@ -72,10 +72,16 @@
     color: var(--header-text);
   }
 
-  .order-card .order-items .items-table th,
+
   .order-card .order-items .items-table td {
     border-bottom: 1px solid var(--sku-border);
     color: var(--text-color);
+    padding: 0.35rem 0.5rem;
+  }
+
+  .order-card .order-items .items-table th {
+    background-color:#1565C0;; /* Kale blue */
+    color: #fff;
     padding: 0.35rem 0.5rem;
   }
 
@@ -241,7 +247,7 @@
       }
 
       thead {
-        background-color: var(--header-bg);
+        background-color: #1565C0;;
         color: var(--header-text);
       }
 
