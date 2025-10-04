@@ -1,0 +1,320 @@
+/* ==============================================
+   Export History Component - Full SCSS
+   Light & Dark Mode | Collapsed & Expanded Cards
+   No Sass color functions, CSS variable based
+   ============================================== */
+
+/* ------------------------
+   CSS Variables
+------------------------ */
+:host {
+  /* Primary colors */
+  --color-primary: #4CAF50;
+  --color-secondary: #FFC107;
+  --color-accent: #00BCD4;
+
+  /* Page background */
+  --bg-page-light: #f9f9f9;
+  --bg-page-dark: #121212;
+
+  /* Cards */
+  --bg-card-light: #ffffff;
+  --bg-card-dark: #1e1e2f;
+  --bg-card-hover-light: #f1fdf1;  /* slightly lighter on hover */
+  --bg-card-hover-dark: #2a2a40;
+
+  /* Panels (expanded order list) */
+  --bg-panel-light: #f2f2f2;
+  --bg-panel-dark: #252536;
+
+  /* Text colors */
+  --text-primary-light: #333;
+  --text-primary-dark: #f5f5f5;
+  --text-secondary-light: #666;
+  --text-secondary-dark: #ccc;
+
+  /* Borders */
+  --border-light: #ddd;
+  --border-dark: #444;
+
+  /* Buttons */
+  --btn-bg-light: var(--color-primary);
+  --btn-bg-dark: var(--color-primary);
+  --btn-hover-light: #43a047; /* darker green */
+  --btn-hover-dark: #43a047;
+
+  /* Table headers and rows */
+  --table-header-bg-light: var(--color-accent);
+  --table-header-bg-dark: #2a2a3f;
+  --table-row-even-light: #f7f7f7;
+  --table-row-even-dark: #29293d;
+
+  /* Card shadow */
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ------------------------
+   Base Styles - Light Mode
+------------------------ */
+:host {
+  display: block;
+  padding: 1rem;
+  background: var(--bg-page-light);
+  color: var(--text-primary-light);
+
+  .loading {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--text-primary-light);
+  }
+
+  .export-card {
+    background: var(--bg-card-light);
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    transition: background 0.3s ease;
+
+    .export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-light);
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: var(--bg-card-hover-light);
+      }
+
+      .export-main-info {
+        h3 {
+          margin: 0 0 0.2rem 0;
+          color: var(--color-primary);
+        }
+        p {
+          margin: 0.2rem 0;
+          font-size: 0.85rem;
+          color: var(--text-secondary-light);
+        }
+      }
+
+      .export-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .btn-download {
+          background: var(--btn-bg-light);
+          color: #fff;
+          padding: 0.3rem 0.6rem;
+          border-radius: 5px;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 0.85rem;
+          transition: background 0.2s ease;
+
+          &:hover {
+            background: var(--btn-hover-light);
+          }
+        }
+
+        .toggle-icon {
+          font-size: 1.2rem;
+          color: var(--color-primary);
+        }
+      }
+    }
+
+    .orders-panel {
+      padding: 0.5rem 1rem;
+      background: var(--bg-panel-light);
+      transition: background 0.3s ease;
+
+      .order-card {
+        border-top: 1px solid var(--border-light);
+        padding: 0.4rem 0;
+
+        .order-summary {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          cursor: pointer;
+          font-size: 0.85rem;
+          align-items: center;
+
+          .toggle-icon {
+            margin-left: auto;
+          }
+        }
+
+        .items-table-wrapper {
+          margin-top: 0.5rem;
+
+          .items-table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th, td {
+              padding: 0.4rem 0.6rem;
+              border: 1px solid var(--border-light);
+              font-size: 0.85rem;
+            }
+
+            th {
+              background: var(--table-header-bg-light);
+              color: #fff;
+            }
+
+            tbody tr:nth-child(even) {
+              background: var(--table-row-even-light);
+            }
+
+            td {
+              color: var(--text-primary-light);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ------------------------
+   Dark Mode
+------------------------ */
+@media (prefers-color-scheme: dark) {
+  :host {
+    background: var(--bg-page-dark);
+    color: var(--text-primary-dark);
+
+    .loading {
+      color: var(--text-primary-dark);
+    }
+
+    .export-card {
+      background: var(--bg-card-dark);
+      border: 1px solid var(--border-dark);
+
+      .export-header {
+        border-bottom: 1px solid var(--border-dark);
+
+        &:hover {
+          background: var(--bg-card-hover-dark);
+        }
+
+        .export-main-info {
+          h3 { color: #388E3C }
+          p { color: var(--text-secondary-dark); }
+        }
+
+        .export-actions {
+          .btn-download {
+            background: var(--btn-bg-dark);
+            color: #fff;
+
+            &:hover {
+              background: var(--btn-hover-dark);
+            }
+          }
+          .toggle-icon { color: var(--text-primary-dark); }
+        }
+      }
+
+      .orders-panel {
+        background: var(--bg-panel-dark);
+
+        .order-card {
+          border-top: 1px solid var(--border-dark);
+
+          .order-summary {
+            color: var(--text-primary-dark);
+          }
+
+          .items-table-wrapper {
+            .items-table {
+              th {
+                background: var(--table-header-bg-dark);
+                color: var(--text-primary-dark);
+              }
+
+              tbody tr:nth-child(even) {
+                background: var(--table-row-even-dark);
+              }
+
+              td {
+                color: var(--text-secondary-dark);
+              }
+
+              th, td {
+                border: 1px solid var(--border-dark);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ------------------------
+   Responsive
+------------------------ */
+@media (max-width: 768px) {
+  .export-header,
+  .order-summary {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .items-table th,
+  .items-table td {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.4rem;
+  }
+}
+
+
+
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  gap: 1rem;
+  min-height: 200px; // ensures spinner is visible
+
+  p {
+    font-size: 1rem;
+    color: #333; // fallback light mode text
+  }
+
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f0f0f0; // light gray background ring
+    border-top: 5px solid #4CAF50; // Kale primary green
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    p {
+      color: #eee; // dark mode text
+    }
+    .spinner {
+      border: 5px solid #1e1e2f; // dark card bg
+      border-top: 5px solid #4CAF50; // Kale primary green
+    }
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

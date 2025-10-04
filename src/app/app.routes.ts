@@ -3,6 +3,8 @@ import { SandboxComponent } from './component/sandbox/sandbox.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { HomepageComponent } from './component/homepage/homepage.component';
 import { AdminLoginComponent } from './component/admin-login/admin-login.component';
+import { ExportHistoryComponent } from './component/export-history/export-history.component';
+
 import { AuthGuard } from './core/auth.guard';
 
 export const routes: Routes = [
@@ -16,6 +18,7 @@ export const routes: Routes = [
     canActivate: [AuthGuard], // <-- protect all child pages
     children: [
       { path: '', component: HomepageComponent },
+      { path: 'export-history', component: ExportHistoryComponent },
       { path: 'sandbox', component: SandboxComponent },
       {
         path: 'products',

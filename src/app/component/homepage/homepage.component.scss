@@ -80,7 +80,7 @@
   }
 
   .order-card .order-items .items-table th {
-    background-color:#1565C0;; /* Kale blue */
+    background-color:#1565C0; /* Kale blue */
     color: #fff;
     padding: 0.35rem 0.5rem;
   }
@@ -395,5 +395,57 @@
   .header-actions {
     flex-direction: column;
     gap: 0.3rem;
+  }
+}
+
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  border: 2px dashed var(--color-primary);
+  border-radius: 10px;
+  background: var(--bg-panel-light);
+  color: var(--text-primary-light);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s ease;
+
+  p {
+    margin: 0.3rem 0;
+  }
+
+  .hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary-light);
+
+    a {
+      color: var(--color-accent);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--bg-panel-dark);
+    color: var(--text-primary-dark);
+    border-color: var(--color-primary);
+
+    .hint {
+      color: var(--text-secondary-dark);
+
+      a {
+        color: #1565C0;
+        text-decoration: none;
+
+        &:hover {
+          color: var(--color-primary);
+        }
+      }
+    }
   }
 }

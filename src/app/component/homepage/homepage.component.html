@@ -88,9 +88,13 @@
     </div>
   </ng-container>
 
-  <div *ngIf="!loading && groupedOrders.length === 0" class="empty">
-    No orders to Export.
+  <div *ngIf="!loading && groupedOrders.length === 0" class="empty-state">
+    <p> No New Orders to Export</p>
+    <p class="hint">
+      but... you can <a [routerLink]="['/export-history']">view past exports here</a>
+    </p>
   </div>
+
 </div>
 
 <!-- Export Modal -->

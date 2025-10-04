@@ -37,5 +37,16 @@ export class DropshipOrderService {
     );
   }
 
+  // src/app/services/dropship-order.service.ts
+  getExportHistory(): Observable<any[]> {
+    const headers = this.adminAuth.getToken()
+      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
+      : undefined;
+
+    return this.http
+      .get<{ data: any[] }>(`${this.apiUrl}/admin/dropship-export-history`, { headers })
+      .pipe(map(res => res.data || []));
+  }
+
 
 }

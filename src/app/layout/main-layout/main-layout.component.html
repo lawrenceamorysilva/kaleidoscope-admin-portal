@@ -24,11 +24,16 @@
       <!-- Top nav links -->
       <nav class="nav flex-column mb-3" (click)="closeSidebarOnMobile()">
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-link">
-          Dropship Order Exporter
+          Order Exporter
         </a>
 
+        <a routerLink="/export-history" routerLinkActive="active" class="nav-link">
+          Export History
+        </a>
+
+
         <a routerLink="/products" routerLinkActive="active" class="nav-link">
-          Dropship Products
+          Products
         </a>
         <a routerLink="/products-hidden" routerLinkActive="active" class="nav-link">
           Non-Dropship Products
