@@ -2,64 +2,86 @@
   <h2 style="color:#6bb742;" class="mb-4">Order Export History</h2>
 </div>
 
-<div class="export-history" *ngIf="!loading; else loadingTemplate">
-  <div *ngFor="let exp of exportHistory" class="export-card">
+<!-- Export History Section -->
+<ng-container *ngIf="!loading; else loadingTemplate">
 
-    <!-- Collapsed Header / Card Main Info -->
-    <div class="export-header" (click)="toggleExport(exp.id)">
-      <div class="export-main-info">
-        <h3>{{ exp.filename }}</h3>
-        <p>Exported by: {{ exp.exported_by }} | {{ exp.exported_at | date:'dd MMM yyyy hh:mma' }} | Number of orders: {{ exp.orders.length }}</p>
-        <p></p>
-      </div>
-      <div class="export-actions">
-        <a [href]="exp.download_url" target="_blank" class="btn-download">Download CSV</a>
-        <span class="toggle-icon">{{ expandedExports[exp.id] ? '▲' : '▼' }}</span>
+  <ng-container *ngIf="exportHistory && exportHistory.length > 0; else noHistoryTemplate">
+
+    <div class="export-history">
+      <div *ngFor="let exp of exportHistory" class="export-card">
+
+        <!-- Collapsed Header / Card Main Info -->
+        <div class="export-header" (click)="toggleExport(exp.id)">
+          <div class="export-main-info">
+            <h3>{{ exp.filename }}</h3>
+            <p>
+              Exported by: {{ exp.exported_by }} |
+              {{ exp.exported_at | date: 'dd MMM yyyy hh:mma' }} |
+              Number of orders: {{ exp.orders.length }}
+            </p>
+          </div>
+          <div class="export-actions">
+            <a [href]="exp.download_url" target="_blank" class="btn-download">Download CSV</a>
+            <span class="toggle-icon">{{ expandedExports[exp.id] ? '▲' : '▼' }}</span>
+          </div>
+        </div>
+
+        <!-- Expanded Panel: List of Orders -->
+        <div class="orders-panel" *ngIf="expandedExports[exp.id]">
+          <div *ngFor="let order of exp.orders" class="order-card">
+
+            <!-- Order Summary -->
+            <div class="order-summary" (click)="toggleOrder(order.id)">
+              <span>{{ order.username }}</span>
+              <span *ngIf="order.po_number">| PO #{{ order.po_number }}</span>
+              <span>| Total: ${{ order.grand_total }}</span>
+              <span>| Shipping: ${{ order.shipping_total }}</span>
+              <span class="toggle-icon">{{ expandedOrders[order.id] ? '▲' : '▼' }}</span>
+            </div>
+
+            <!-- Expandable Items Table per Order -->
+            <div class="items-table-wrapper" *ngIf="expandedOrders[order.id]">
+              <table class="items-table">
+                <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Product Name</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of order.items">
+                  <td>{{ item.sku }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.qty }}</td>
+                  <td>${{ item.price }}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Expanded Panel: List of Orders -->
-    <div class="orders-panel" *ngIf="expandedExports[exp.id]">
-      <div *ngFor="let order of exp.orders" class="order-card">
-        <div class="order-summary" (click)="toggleOrder(order.id)">
-          <span>{{ order.username }}</span> |
-          <span>PO #{{ order.po_number }}</span> |
-          <span>Total: ${{ order.grand_total }}</span> |
-          <span>Shipping: ${{ order.shipping_total }}</span>
-          <span class="toggle-icon">{{ expandedOrders[order.id] ? '▲' : '▼' }}</span>
-        </div>
+  </ng-container>
 
-        <!-- Expandable Items Table per Order -->
-        <div class="items-table-wrapper" *ngIf="expandedOrders[order.id]">
-          <table class="items-table">
-            <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Product Name</th>
-              <th>Qty</th>
-              <th>Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of order.items">
-              <td>{{ item.sku }}</td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.qty }}</td>
-              <td>${{ item.price }}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+</ng-container>
 
-  </div>
-</div>
-
-<ng-template #loadingTemplate>
-  <div class="loading-spinner">
-    <div class="spinner"></div>
-    <p>Loading export history...</p>
+<!-- No History Template -->
+<ng-template #noHistoryTemplate>
+  <div class="no-history">
+    <p>No Export History Data found.</p>
   </div>
 </ng-template>
 
+<!-- Loading Template -->
+<ng-template #loadingTemplate>
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <p>Loading Export History...</p>
+  </div>
+</ng-template>

@@ -6,7 +6,7 @@ import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss']
 })
@@ -27,13 +27,16 @@ export class HomepageComponent implements OnInit {
   }
 
   private fetchOrders(): void {
+    this.loading = true;
     this.dropshipOrderService.getOrders().subscribe({
       next: (data) => {
-        this.groupedOrders = this.groupByRetailer(data);
+        const safeData = Array.isArray(data) ? data : [];
+        this.groupedOrders = this.groupByRetailer(safeData);
         this.loading = false;
       },
       error: (err) => {
-        console.error('Failed to fetch dropship orders', err);
+        console.error('Failed to fetch dropship orders:', err);
+        this.groupedOrders = [];
         this.loading = false;
       }
     });
@@ -44,31 +47,22 @@ export class HomepageComponent implements OnInit {
     for (const order of orders) {
       const retailer = order.username || 'Unknown Retailer';
       if (!map.has(retailer)) {
-        // ✅ Groups start expanded by default
         map.set(retailer, { retailer, expanded: true, orders: [] });
       }
-      // ✅ Orders start collapsed by default
       map.get(retailer).orders.push({ ...order, expanded: false });
     }
     return Array.from(map.values());
   }
 
-
-
-  toggleAll() {
+  toggleAll(): void {
     this.allExpanded = !this.allExpanded;
-
     this.groupedOrders.forEach(group => {
       group.expanded = this.allExpanded;
-
       group.orders.forEach((order: any) => {
         order.expanded = this.allExpanded;
       });
     });
   }
-
-
-
 
   onExport(): void {
     if (!this.groupedOrders.length) {
@@ -78,12 +72,11 @@ export class HomepageComponent implements OnInit {
     this.showExportModal = true;
   }
 
-  confirmExport() {
+  confirmExport(): void {
     const flatOrders = this.groupedOrders.flatMap(g => g.orders);
     if (!flatOrders.length) return;
 
     this.exporting = true;
-
     this.dropshipOrderService.exportOrders(flatOrders).subscribe({
       next: (res) => {
         this.downloadUrl = res.downloadUrl;
@@ -92,22 +85,22 @@ export class HomepageComponent implements OnInit {
         this.showExportModal = false;
       },
       error: (err) => {
-        console.error('Export failed', err);
+        console.error('Export failed:', err);
         this.exporting = false;
         this.showExportModal = false;
         alert('Failed to export orders. Check console for details.');
-      },
+      }
     });
   }
 
-  closeModal() {
+  closeModal(): void {
     this.showExportModal = false;
     this.exportReady = false;
     this.downloadUrl = '';
     this.fetchOrders();
   }
 
-  downloadAndRefresh(event: Event) {
+  downloadAndRefresh(event: Event): void {
     setTimeout(() => {
       this.exportReady = false;
       this.downloadUrl = '';
@@ -116,11 +109,11 @@ export class HomepageComponent implements OnInit {
     }, 500);
   }
 
-  cancelExport() {
+  cancelExport(): void {
     this.showExportModal = false;
   }
 
-  refreshPage() {
+  refreshPage(): void {
     window.location.reload();
   }
 

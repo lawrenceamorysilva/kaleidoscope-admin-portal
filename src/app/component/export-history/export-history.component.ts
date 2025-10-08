@@ -24,23 +24,27 @@ export class ExportHistoryComponent implements OnInit {
   }
 
   fetchExportHistory(): void {
+    this.loading = true;
+
     this.dropshipOrderService.getExportHistory().subscribe({
       next: (res: any) => {
-        this.exportHistory = res;
+        // Normalize and ensure array safety
+        this.exportHistory = Array.isArray(res) ? res : [];
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error fetching history:', err);
+        console.error('Error fetching export history:', err);
+        this.exportHistory = [];
         this.loading = false;
       }
     });
   }
 
-  toggleExport(expId: number) {
+  toggleExport(expId: number): void {
     this.expandedExports[expId] = !this.expandedExports[expId];
   }
 
-  toggleOrder(orderId: number) {
+  toggleOrder(orderId: number): void {
     this.expandedOrders[orderId] = !this.expandedOrders[orderId];
   }
 }

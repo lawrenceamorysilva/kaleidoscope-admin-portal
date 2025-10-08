@@ -264,18 +264,74 @@
    Responsive
 ------------------------ */
 @media (max-width: 768px) {
-  .export-header,
-  .order-summary {
+  .export-header {
     flex-direction: column;
-    gap: 0.3rem;
+    align-items: flex-start;
+    gap: 0.5rem;
+    text-align: left;
+
+    .export-actions {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    h3 {
+      font-size: 1rem;
+      word-break: break-word;
+    }
+
+    p {
+      font-size: 0.8rem;
+      word-break: break-word;
+    }
   }
 
-  .items-table th,
-  .items-table td {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.4rem;
+  .orders-panel {
+    padding: 0.5rem;
+
+    .order-card {
+      .order-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        row-gap: 0.3rem;
+        column-gap: 0.5rem;
+        text-align: left;
+        font-size: 0.8rem;
+        line-height: 1.4;
+
+        span {
+          display: inline-block;
+        }
+
+        /* Hide the "|" separators on small screens */
+        span::after {
+          content: '';
+        }
+
+        .toggle-icon {
+          grid-column: 2;
+          justify-self: end;
+        }
+      }
+
+      .items-table-wrapper {
+        overflow-x: auto; /* horizontal scroll if needed */
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .items-table {
+        min-width: 420px;
+        th, td {
+          font-size: 0.75rem;
+          padding: 0.3rem 0.4rem;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 }
+
 
 
 
@@ -317,4 +373,24 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+.no-history {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary-light);
+  font-size: 1rem;
+  font-weight: 500;
+  background: var(--bg-card-light);
+  border-radius: 10px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-light);
+  margin-top: 1rem;
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--bg-card-dark);
+    color: var(--text-secondary-dark);
+    border: 1px solid var(--border-dark);
+  }
 }
