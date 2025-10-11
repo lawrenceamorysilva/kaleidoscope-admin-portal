@@ -4,7 +4,6 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { HomepageComponent } from './component/homepage/homepage.component';
 import { AdminLoginComponent } from './component/admin-login/admin-login.component';
 import { ExportHistoryComponent } from './component/export-history/export-history.component';
-
 import { AuthGuard } from './core/auth.guard';
 
 export const routes: Routes = [
@@ -15,7 +14,7 @@ export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [AuthGuard], // <-- protect all child pages
+    canActivate: [AuthGuard],
     children: [
       { path: '', component: HomepageComponent },
       { path: 'export-history', component: ExportHistoryComponent },
@@ -34,6 +33,14 @@ export const routes: Routes = [
             (m) => m.ProductsComponent
           ),
         data: { title: 'Non-Dropship Products' },
+      },
+      //General Settings Page
+      {
+        path: 'general-settings',
+        loadComponent: () =>
+          import('./component/general-settings/general-settings.component').then(
+            (m) => m.GeneralSettingsComponent
+          ),
       },
     ],
   },

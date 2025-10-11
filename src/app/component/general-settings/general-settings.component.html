@@ -1,0 +1,120 @@
+<div class="general-settings-page">
+  <div class="page-header mb-4">
+    <h2 class="text-success">General Dropshipping Settings</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading settings...</p>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- 🔹 Portal Constants -->
+    <div class="card mb-4 p-4 shadow-sm border-0">
+      <h5 class="section-title mb-3">Dropshipping Portal Constants</h5>
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Minimum Order Value</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="settings['minimum_order_value']"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Dropship Fee</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="settings['dropship_fee']"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Minimum Freight Charge</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="settings['minimum_freight_charge']"
+          />
+        </div>
+        <!--<div class="col-md-3">
+          <label class="form-label">Currency</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="settings['currency']"
+          />
+        </div>-->
+      </div>
+
+    </div>
+
+    <!-- 🔹 Terms & Conditions -->
+    <div class="card mb-4 p-4 shadow-sm border-0">
+      <h5 class="section-title mb-3">Terms & Conditions</h5>
+      <quill-editor
+        [(ngModel)]="termsContent"
+        placeholder="Write the Terms & Conditions here..."
+      ></quill-editor>
+    </div>
+
+    <!-- 🔹 Frequently Asked Questions -->
+    <div class="card mb-4 p-4 shadow-sm border-0">
+      <h5 class="section-title mb-3">Frequently Asked Questions</h5>
+
+      <div *ngIf="!faqContent">
+        <p class="text-muted mb-0">No FAQ data yet.</p>
+      </div>
+
+      <div *ngIf="faqContent">
+        <div *ngFor="let section of faqContent.sections; let si = index" class="faq-section mb-3">
+          <!-- Editable Section Heading -->
+          <div class="mb-2 d-flex align-items-center gap-2">
+            <input
+              type="text"
+              class="form-control fw-bold"
+              [(ngModel)]="section.heading"
+              placeholder="Section Heading"
+            />
+            <button class="btn btn-sm btn-outline-danger" (click)="removeFaqSection(si)">Remove Section</button>
+          </div>
+
+          <div *ngFor="let item of section.items; let ii = index" class="faq-item mb-2">
+            <label>Q:</label>
+            <input type="text" class="form-control mb-1" [(ngModel)]="item.question" placeholder="Question" />
+
+            <label>A:</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="item.answer" placeholder="Answer"></textarea>
+
+            <button class="btn btn-sm btn-outline-danger mt-1" (click)="removeFaqItem(si, ii)">Remove Q&A</button>
+          </div>
+
+          <button class="btn btn-sm btn-outline-success mt-1" (click)="addFaqItem(si)">Add Q&A</button>
+        </div>
+
+        <button class="btn btn-sm btn-outline-primary mt-2" (click)="addFaqSection()">Add Section</button>
+      </div>
+
+
+
+      <div class="text-end">
+      <button
+        class="btn btn-success px-4"
+        (click)="saveSettings()"
+        [disabled]="saving"
+      >
+        {{ saving ? 'Saving...' : 'Save All Settings' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Toast Notification -->
+  <div
+    class="toast-container"
+    *ngIf="toastVisible"
+    [ngClass]="toastType === 'success' ? 'toast-success' : 'toast-error'">
+    {{ toastMessage }}
+  </div>

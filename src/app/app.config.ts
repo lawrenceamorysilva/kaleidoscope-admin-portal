@@ -10,9 +10,8 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 
-// ✅ Import your standalone components
-import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
-import { SandboxComponent } from './component/sandbox/sandbox.component';
+// 🪶 Quill editor
+import { QuillModule } from 'ngx-quill';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
 
-    // ✅ Register both standalone components
-    //importProvidersFrom(MainLayoutComponent, SandboxComponent),
+    // ✅ Import Quill globally
+    importProvidersFrom(QuillModule.forRoot()),
   ],
 };
