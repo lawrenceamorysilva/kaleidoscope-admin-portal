@@ -14,41 +14,23 @@
       <h5 class="section-title mb-3">Dropshipping Portal Constants</h5>
 
       <div class="row g-3">
-        <div class="col-md-3">
-          <label class="form-label">Minimum Order Value</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="settings['minimum_order_value']"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Dropship Fee</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="settings['dropship_fee']"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Minimum Freight Charge</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="settings['minimum_freight_charge']"
-          />
-        </div>
-        <!--<div class="col-md-3">
-          <label class="form-label">Currency</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="settings['currency']"
-          />
-        </div>-->
+        <ng-container *ngFor="let key of settingsKeys">
+          <div class="col-md-3">
+            <label class="form-label">{{ formatKey(key) }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="settings[key]"
+              [ngClass]="{ 'is-invalid': !isValid(key) }"
+            />
+            <div class="invalid-feedback">
+              {{ getValidationMessage(key) }}
+            </div>
+          </div>
+        </ng-container>
       </div>
-
     </div>
+
 
     <!-- 🔹 Terms & Conditions -->
     <div class="card mb-4 p-4 shadow-sm border-0">
@@ -99,13 +81,13 @@
 
 
       <div class="text-end">
-      <button
-        class="btn btn-success px-4"
-        (click)="saveSettings()"
-        [disabled]="saving"
-      >
-        {{ saving ? 'Saving...' : 'Save All Settings' }}
-      </button>
+        <button
+          class="btn btn-success px-4"
+          (click)="saveSettings()"
+          [disabled]="!canSave() || saving"
+        >
+          Save Settings
+        </button>
     </div>
   </div>
 </div>
