@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@environments/environment';
-import {Observable, of, switchMap} from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 
 export interface AdminUser {
@@ -24,7 +24,6 @@ interface LoginResponse {
 export class AdminAuthService {
   private apiUrl = `${environment.apiUrl}/admin`;
   private tokenKey = 'admin_token';
-
   currentUser: AdminUser | null = null;
 
   constructor(private http: HttpClient) {}
@@ -41,38 +40,36 @@ export class AdminAuthService {
   }
 
   /** Build headers if token exists */
-  private authHeaders(): HttpHeaders | undefined {
+  private authHeaders(): { headers: HttpHeaders } | null {
     const token = this.getToken();
-    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return token ? { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) } : null;
   }
 
-
-  /** Login with credentials using Sanctum cookies */
+  /** Login using token-based auth */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
-    // Step 1: get CSRF cookie from root domain
-    return this.http.get(environment.csrfUrl, { withCredentials: true }).pipe(
-      switchMap(() =>
-        // Step 2: post login credentials to API
-        this.http.post<AdminUser>(`${this.apiUrl}/admin/login`, credentials, { withCredentials: true }).pipe(
-          tap(user => this.currentUser = user),
-          catchError(err => {
-            console.error('Login failed', err);
-            return of(null);
-          })
-        )
-      )
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(res => {
+        this.setToken(res.access_token);
+        this.currentUser = res.user;
+      }),
+      map(res => res.user),
+      catchError(err => {
+        console.error('Login failed', err);
+        return of(null);
+      })
     );
   }
 
-  /** Validate session / fetch user info using cookies */
+  /** Fetch current admin user using stored token */
   me(): Observable<AdminUser | null> {
-    return this.http.get<AdminUser>(`${this.apiUrl}/admin/me`, { withCredentials: true }).pipe(
-      tap(user => (this.currentUser = user)),
-      catchError(err => {
-        console.error('Session invalid', err);
-        this.clearAuth();
-        return of(null);
-      })
+    const token = this.getToken();
+    if (!token) return of(null);
+
+    return this.http.get<AdminUser>(`${this.apiUrl}/me`, {
+      headers: new HttpHeaders({ Authorization: `Bearer ${token}` })
+    }).pipe(
+      tap(user => this.currentUser = user),
+      catchError(err => { this.clearAuth(); return of(null); })
     );
   }
 
@@ -83,14 +80,14 @@ export class AdminAuthService {
     const headers = this.authHeaders();
     if (!headers) {
       this.clearAuth();
-      return of(true); // nothing to do if no token
+      return of(true);
     }
 
-    return this.http.post(`${this.apiUrl}/logout`, {}, { headers }).pipe(
+    return this.http.post(`${this.apiUrl}/logout`, {}, headers).pipe(
       tap(() => this.clearAuth()),
       map(() => true),
       catchError(() => {
-        this.clearAuth(); // still clear local state if API fails
+        this.clearAuth();
         return of(true);
       })
     );
