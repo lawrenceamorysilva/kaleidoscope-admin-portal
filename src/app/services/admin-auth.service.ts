@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@environments/environment';
-import { Observable, of } from 'rxjs';
+import {Observable, of, switchMap} from 'rxjs';
 import { tap, catchError, map } from 'rxjs/operators';
 
 export interface AdminUser {
@@ -47,30 +47,37 @@ export class AdminAuthService {
   }
 
   /** Login with credentials */
-  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(res => {
-        this.setToken(res.access_token);
-        this.currentUser = res.user;
-      })
+  /** Login with credentials using Sanctum */
+  login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
+    // Step 1: get CSRF cookie
+    return this.http.get(`${this.apiUrl}/sanctum/csrf-cookie`, { withCredentials: true }).pipe(
+      switchMap(() =>
+        // Step 2: post login credentials
+        this.http.post<AdminUser>(`${this.apiUrl}/admin/login`, credentials, { withCredentials: true }).pipe(
+          tap(user => this.currentUser = user),
+          catchError(err => {
+            console.error('Login failed', err);
+            return of(null);
+          })
+        )
+      )
     );
   }
 
-  /** Validate session / fetch user info */
-  me(): Observable<AdminUser | null> {
-    const headers = this.authHeaders();
-    if (!headers) {
-      return of(null);
-    }
 
-    return this.http.get<AdminUser>(`${this.apiUrl}/me`, { headers }).pipe(
+  /** Validate session / fetch user info */
+  /** Validate session / fetch user info using cookies */
+  me(): Observable<AdminUser | null> {
+    return this.http.get<AdminUser>(`${this.apiUrl}/admin/me`, { withCredentials: true }).pipe(
       tap(user => (this.currentUser = user)),
-      catchError(() => {
+      catchError(err => {
+        console.error('Session invalid', err);
         this.clearAuth();
         return of(null);
       })
     );
   }
+
 
   /** Logout from backend + clear client state */
   logout(): Observable<boolean> {
