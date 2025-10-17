@@ -46,13 +46,13 @@ export class AdminAuthService {
     return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
   }
 
-  /** Login with credentials */
-  /** Login with credentials using Sanctum */
+
+  /** Login with credentials using Sanctum cookies */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
-    // Step 1: get CSRF cookie
-    return this.http.get(`${this.apiUrl}/sanctum/csrf-cookie`, { withCredentials: true }).pipe(
+    // Step 1: get CSRF cookie from root domain
+    return this.http.get(environment.csrfUrl, { withCredentials: true }).pipe(
       switchMap(() =>
-        // Step 2: post login credentials
+        // Step 2: post login credentials to API
         this.http.post<AdminUser>(`${this.apiUrl}/admin/login`, credentials, { withCredentials: true }).pipe(
           tap(user => this.currentUser = user),
           catchError(err => {
@@ -64,8 +64,6 @@ export class AdminAuthService {
     );
   }
 
-
-  /** Validate session / fetch user info */
   /** Validate session / fetch user info using cookies */
   me(): Observable<AdminUser | null> {
     return this.http.get<AdminUser>(`${this.apiUrl}/admin/me`, { withCredentials: true }).pipe(
@@ -77,6 +75,7 @@ export class AdminAuthService {
       })
     );
   }
+
 
 
   /** Logout from backend + clear client state */

@@ -1,4 +1,5 @@
+// environment.ts for local machine
 export const environment = {
-  production: false,
-  apiUrl: 'http://api.localhost:8000/api', // adjust to your local dev endpoint
+  apiUrl: 'http://api.localhost:8000/api',
+  csrfUrl: 'http://api.localhost:8000/sanctum/csrf-cookie'
 };

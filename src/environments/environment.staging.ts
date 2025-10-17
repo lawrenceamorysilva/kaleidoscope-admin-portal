@@ -1,4 +1,5 @@
+// environment.ts for staging
 export const environment = {
-  production: false,
   apiUrl: 'https://staging-api.kaleidoscope.com.au/api',
+  csrfUrl: 'https://staging-api.kaleidoscope.com.au/sanctum/csrf-cookie'
 };
