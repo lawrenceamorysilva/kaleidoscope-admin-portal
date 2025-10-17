@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { AdminAuthService } from './admin-auth.service';
 
 export interface FAQItem {
   question: string;
@@ -30,19 +29,12 @@ export interface GeneralSettingsResponse {
 export class GeneralSettingsService {
   private apiUrl = environment.apiUrl;
 
-  constructor(
-    private http: HttpClient,
-    private adminAuth: AdminAuthService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   // Fetch existing general settings
   getSettings(): Observable<GeneralSettingsResponse> {
-    const headers = this.adminAuth.getToken()
-      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
-      : undefined;
-
     return this.http
-      .get<GeneralSettingsResponse>(`${this.apiUrl}/admin/general-settings`, { headers })
+      .get<GeneralSettingsResponse>(`${this.apiUrl}/admin/general-settings`, { withCredentials: true })
       .pipe(map(res => res));
   }
 
@@ -52,11 +44,6 @@ export class GeneralSettingsService {
     terms: string | null,
     faq: FAQ | null
   }): Observable<{ success: boolean; message: string }> {
-    const headers = this.adminAuth.getToken()
-      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
-      : undefined;
-
-    // Serialize FAQ as JSON if present
     const body = {
       settings: payload.settings,
       terms: payload.terms,
@@ -64,11 +51,9 @@ export class GeneralSettingsService {
     };
 
     return this.http.post<{ success: boolean; message: string }>(
-      `${this.apiUrl}/admin/general-settings/save-all`, // 🔹 point to save-all route
+      `${this.apiUrl}/admin/general-settings/save-all`,
       body,
-      { headers }
+      { withCredentials: true }
     );
   }
-
-
 }

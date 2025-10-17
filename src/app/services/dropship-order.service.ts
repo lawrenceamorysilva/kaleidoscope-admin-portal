@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { AdminAuthService } from './admin-auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,43 +9,25 @@ import { AdminAuthService } from './admin-auth.service';
 export class DropshipOrderService {
   private apiUrl = environment.apiUrl;
 
-  constructor(
-    private http: HttpClient,
-    private adminAuth: AdminAuthService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   getOrders(): Observable<any[]> {
-    const headers = this.adminAuth.getToken()
-      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
-      : undefined;
-
     return this.http
-      .get<{ orders: any[] }>(`${this.apiUrl}/admin/dropship-orders`, { headers })
+      .get<{ orders: any[] }>(`${this.apiUrl}/admin/dropship-orders`, { withCredentials: true })
       .pipe(map(res => res.orders || []));
   }
 
   exportOrders(orders: any[]): Observable<{ downloadUrl: string }> {
-    const headers = this.adminAuth.getToken()
-      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
-      : undefined;
-
     return this.http.post<{ downloadUrl: string }>(
       `${this.apiUrl}/admin/export-dropship-orders`,
-      { orders }, // <-- wrap in object
-      { headers }
+      { orders },
+      { withCredentials: true }
     );
   }
 
-  // src/app/services/dropship-order.service.ts
   getExportHistory(): Observable<any[]> {
-    const headers = this.adminAuth.getToken()
-      ? new HttpHeaders({ Authorization: `Bearer ${this.adminAuth.getToken()}` })
-      : undefined;
-
     return this.http
-      .get<{ data: any[] }>(`${this.apiUrl}/admin/dropship-export-history`, { headers })
+      .get<{ data: any[] }>(`${this.apiUrl}/admin/dropship-export-history`, { withCredentials: true })
       .pipe(map(res => res.data || []));
   }
-
-
 }

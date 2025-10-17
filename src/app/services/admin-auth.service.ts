@@ -15,25 +15,25 @@ export interface AdminUser {
 @Injectable({
   providedIn: 'root',
 })
-export class AdminAuthService {
+export class AdminAuthService {  // ✅ must be exported
   private apiUrl = `${environment.apiUrl}/admin`;
   currentUser: AdminUser | null = null;
 
   constructor(private http: HttpClient) {}
 
-  /** Login via session-based auth */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
-    return this.http.post<{ user: AdminUser }>(`${this.apiUrl}/login`, credentials, { withCredentials: true }).pipe(
-      tap(res => this.currentUser = res.user),
-      map(res => res.user),
-      catchError(err => {
-        console.error('Login failed', err);
-        return of(null);
-      })
-    );
+    return this.http
+      .post<{ user: AdminUser }>(`${this.apiUrl}/login`, credentials, { withCredentials: true })
+      .pipe(
+        tap(res => this.currentUser = res.user),
+        map(res => res.user),
+        catchError(err => {
+          console.error('Login failed', err);
+          return of(null);
+        })
+      );
   }
 
-  /** Get current logged-in admin */
   me(): Observable<AdminUser | null> {
     return this.http.get<AdminUser>(`${this.apiUrl}/me`, { withCredentials: true }).pipe(
       tap(user => this.currentUser = user),
@@ -44,7 +44,6 @@ export class AdminAuthService {
     );
   }
 
-  /** Logout */
   logout(): Observable<boolean> {
     return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => this.clearAuth()),
@@ -56,12 +55,10 @@ export class AdminAuthService {
     );
   }
 
-  /** Clear current user state */
   clearAuth() {
     this.currentUser = null;
   }
 
-  /** Quick check if user is logged in */
   isLoggedIn(): boolean {
     return !!this.currentUser;
   }
