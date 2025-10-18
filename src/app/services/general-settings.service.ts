@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
@@ -31,18 +31,27 @@ export class GeneralSettingsService {
 
   constructor(private http: HttpClient) {}
 
+  private getAuthHeaders(): { headers: HttpHeaders } {
+    const token = localStorage.getItem('adminToken') || '';
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      }),
+    };
+  }
+
   // Fetch existing general settings
   getSettings(): Observable<GeneralSettingsResponse> {
     return this.http
-      .get<GeneralSettingsResponse>(`${this.apiUrl}/admin/general-settings`, { withCredentials: true })
+      .get<GeneralSettingsResponse>(`${this.apiUrl}/admin/general-settings`, this.getAuthHeaders())
       .pipe(map(res => res));
   }
 
   // Save or update general settings
   saveSettings(payload: {
-    settings: Record<string, string>,
-    terms: string | null,
-    faq: FAQ | null
+    settings: Record<string, string>;
+    terms: string | null;
+    faq: FAQ | null;
   }): Observable<{ success: boolean; message: string }> {
     const body = {
       settings: payload.settings,
@@ -52,8 +61,13 @@ export class GeneralSettingsService {
 
     return this.http.post<{ success: boolean; message: string }>(
       `${this.apiUrl}/admin/general-settings/save-all`,
-      body,
-      { withCredentials: true }
+      {
+        settings: payload.settings,
+        terms: payload.terms,
+        faq: payload.faq // send as object, not string
+      },
+      this.getAuthHeaders()
     );
+
   }
 }

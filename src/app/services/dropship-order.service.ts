@@ -11,23 +11,44 @@ export class DropshipOrderService {
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Get all dropship orders (admin)
+   */
   getOrders(): Observable<any[]> {
+    const token = localStorage.getItem('adminToken') || '';
     return this.http
-      .get<{ orders: any[] }>(`${this.apiUrl}/admin/dropship-orders`, { withCredentials: true })
+      .get<{ orders: any[] }>(`${this.apiUrl}/admin/dropship-orders`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .pipe(map(res => res.orders || []));
   }
 
+
+
+  /**
+   * Export orders (admin)
+   */
   exportOrders(orders: any[]): Observable<{ downloadUrl: string }> {
+    const token = localStorage.getItem('adminToken') || '';
     return this.http.post<{ downloadUrl: string }>(
       `${this.apiUrl}/admin/export-dropship-orders`,
       { orders },
-      { withCredentials: true }
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
     );
   }
 
+  /**
+   * Get export history (admin)
+   */
   getExportHistory(): Observable<any[]> {
+    const token = localStorage.getItem('adminToken') || '';
     return this.http
-      .get<{ data: any[] }>(`${this.apiUrl}/admin/dropship-export-history`, { withCredentials: true })
+      .get<{ data: any[] }>(`${this.apiUrl}/admin/dropship-export-history`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
       .pipe(map(res => res.data || []));
   }
+
 }

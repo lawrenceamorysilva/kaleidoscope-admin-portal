@@ -9,15 +9,18 @@ import {
   provideClientHydration,
   withEventReplay,
 } from '@angular/platform-browser';
-
-// 🪶 Quill editor
 import { QuillModule } from 'ngx-quill';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { adminAuthInterceptor } from './core/admin-auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
+
+    // ✅ HTTP client with admin JWT interceptor
+    provideHttpClient(withInterceptors([adminAuthInterceptor])),
 
     // ✅ Import Quill globally
     importProvidersFrom(QuillModule.forRoot()),
