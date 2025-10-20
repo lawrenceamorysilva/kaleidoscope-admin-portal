@@ -46,8 +46,8 @@ export class MainLayoutComponent {
   }
 
   logout() {
-    this.adminAuthService.logout().subscribe(() => {
-      window.location.href = '/login'; // or Router navigate
-    });
+    this.adminAuthService.logout();
+    window.location.href = '/login'; // redirect immediately
   }
+
 }
