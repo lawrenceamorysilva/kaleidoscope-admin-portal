@@ -21,9 +21,15 @@ export class AdminAuthService {
   loginError$ = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
+    // Try to restore session
     const token = localStorage.getItem('adminToken');
-    if (token) {
-      this.currentUser = { token } as AdminUser;
+    const storedUser = localStorage.getItem('adminUser');
+
+    if (token && storedUser) {
+      this.currentUser = { ...JSON.parse(storedUser), token };
+    } else if (token) {
+      // Token exists but no user info → try fetching from backend
+      this.fetchCurrentUser();
     }
   }
 
@@ -39,17 +45,40 @@ export class AdminAuthService {
       tap(res => {
         const user: AdminUser = { ...res.user, token: res.access_token } as AdminUser;
         this.currentUser = user;
+
         localStorage.setItem('adminToken', res.access_token);
+        localStorage.setItem('adminUser', JSON.stringify(res.user));
       }),
       map(res => ({ ...res.user, token: res.access_token } as AdminUser)),
       catchError(() => of(null))
     );
   }
 
-  logout(): void {
+  fetchCurrentUser(): void {
+    const token = this.getToken();
+    if (!token) return;
+
+    this.http.get<AdminUser>(`${this.apiUrl}/me`).subscribe({
+      next: (user) => {
+        this.currentUser = { ...user, token };
+        localStorage.setItem('adminUser', JSON.stringify(user));
+      },
+      error: () => {
+        // token invalid, clear everything
+        this.clearSession();
+      }
+    });
+  }
+
+  clearSession(): void {
     this.currentUser = null;
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
     this.loginError$.next('Your session has expired. Please log in again.');
+  }
+
+  logout(): void {
+    this.clearSession();
     this.router.navigate(['/login']);
   }
 

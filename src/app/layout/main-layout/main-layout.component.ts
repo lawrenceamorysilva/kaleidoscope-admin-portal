@@ -50,4 +50,5 @@ export class MainLayoutComponent {
     window.location.href = '/login'; // redirect immediately
   }
 
+
 }
