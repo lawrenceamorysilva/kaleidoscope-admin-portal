@@ -33,10 +33,16 @@ export class AdminAuthService {
     }
   }
 
+  /**
+   * Retrieve JWT token from memory or storage
+   */
   getToken(): string | null {
     return this.currentUser?.token ?? localStorage.getItem('adminToken');
   }
 
+  /**
+   * Perform login and store user + token
+   */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
     return this.http.post<{ access_token: string; user?: AdminUser }>(
       `${this.apiUrl}/login`,
@@ -54,6 +60,9 @@ export class AdminAuthService {
     );
   }
 
+  /**
+   * Re-fetch user info if we have a valid token
+   */
   fetchCurrentUser(): void {
     const token = this.getToken();
     if (!token) return;
@@ -64,25 +73,69 @@ export class AdminAuthService {
         localStorage.setItem('adminUser', JSON.stringify(user));
       },
       error: () => {
-        // token invalid, clear everything
+        // Token invalid, clear everything
         this.clearSession();
       }
     });
   }
 
+  /**
+   * Clear all session data and emit login error if needed
+   */
   clearSession(): void {
     this.currentUser = null;
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
+    localStorage.removeItem('redirectAfterLogin');
+    localStorage.removeItem('loginRequiredMessage');
+    localStorage.removeItem('sessionExpired');
     this.loginError$.next('Your session has expired. Please log in again.');
   }
 
-  logout(): void {
-    this.clearSession();
-    this.router.navigate(['/login']);
+  /**
+   * Logout — if force=true, skip backend call
+   */
+  logout(force = false): Observable<any> | void {
+    const token = this.getToken();
+
+    // Skip backend logout if no token or force mode
+    if (force || !token) {
+      this.clearSession();
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    return this.http.post(`${this.apiUrl}/logout`, {}).pipe(
+      tap(() => {
+        this.clearSession();
+        this.router.navigate(['/login']);
+      }),
+      catchError(() => {
+        // Fallback cleanup on error
+        this.clearSession();
+        this.router.navigate(['/login']);
+        return of(null);
+      })
+    );
   }
 
+  /**
+   * Simple JWT expiry check
+   */
+  isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  }
+
+  /**
+   * Check current login state
+   */
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
   }
 }
