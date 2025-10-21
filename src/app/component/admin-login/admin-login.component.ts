@@ -16,8 +16,9 @@ export class AdminLoginComponent implements OnInit {
   password = '';
   loading = false;
   error: string | null = null;
+
+  // ✅ Add this to match your template
   showPassword = false;
-  loginMessage: string | null = null;
 
   constructor(
     private router: Router,
@@ -25,17 +26,13 @@ export class AdminLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 🧹 Always clear any stale admin session or token when loading login page
-    this.adminAuth.logout(true); // force mode
-
-    // Check if redirected from a protected page due to expired/invalid session
+    // Only show messages; do not clear session automatically
     const msg = localStorage.getItem('loginRequiredMessage');
     if (msg) {
       this.error = msg;
       localStorage.removeItem('loginRequiredMessage');
     }
 
-    // Optionally show message if user was logged out due to inactivity
     const expired = localStorage.getItem('sessionExpired');
     if (expired) {
       this.error = 'Your session has expired. Please log in again.';
@@ -58,12 +55,10 @@ export class AdminLoginComponent implements OnInit {
         next: (res) => {
           this.loading = false;
 
-          // ✅ Reset any stale flags
           localStorage.removeItem('loginRequiredMessage');
           localStorage.removeItem('sessionExpired');
 
-          // Redirect to intended page or dashboard
-          const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/admin';
+          const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
           localStorage.removeItem('redirectAfterLogin');
 
           this.router.navigateByUrl(redirectUrl, { replaceUrl: true });
@@ -71,17 +66,7 @@ export class AdminLoginComponent implements OnInit {
         error: (err) => {
           this.loading = false;
 
-          // Handle known backend errors or fallback
-          if (err.status === 401) {
-            this.error = 'Invalid email or password.';
-          } else if (err.status === 0) {
-            this.error = 'Cannot reach the server. Please check your connection.';
-          } else {
-            this.error = err?.error?.message || 'Login failed. Please try again.';
-          }
-
-          // Clear potentially broken token
-          this.adminAuth.logout(true);
+          this.error = err?.error?.message || 'Login failed. Please try again.';
         }
       });
   }

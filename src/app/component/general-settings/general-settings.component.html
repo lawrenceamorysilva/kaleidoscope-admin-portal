@@ -62,21 +62,49 @@
             <button class="btn btn-sm btn-outline-danger" (click)="removeFaqSection(si)">Remove Section</button>
           </div>
 
+          <!-- Q&A Items -->
           <div *ngFor="let item of section.items; let ii = index" class="faq-item mb-2">
             <label>Q:</label>
-            <input type="text" class="form-control mb-1" [(ngModel)]="item.question" placeholder="Question" />
+            <input
+              type="text"
+              class="form-control mb-1"
+              [(ngModel)]="item.question"
+              placeholder="Question"
+            />
 
             <label>A:</label>
-            <textarea class="form-control" rows="2" [(ngModel)]="item.answer" placeholder="Answer"></textarea>
+            <textarea
+              class="form-control"
+              rows="2"
+              [(ngModel)]="item.answer"
+              placeholder="Answer"
+            ></textarea>
 
-            <button class="btn btn-sm btn-outline-danger mt-1" (click)="removeFaqItem(si, ii)">Remove Q&A</button>
+            <button
+              class="btn btn-sm btn-outline-danger mt-1"
+              (click)="removeFaqItem(si, ii)"
+            >
+              Remove Q&A
+            </button>
           </div>
 
-          <button class="btn btn-sm btn-outline-success mt-1" (click)="addFaqItem(si)">Add Q&A</button>
+          <button
+            class="btn btn-sm btn-outline-success mt-1"
+            (click)="addFaqItem(si)"
+          >
+            Add Q&A
+          </button>
         </div>
 
-        <button class="btn btn-sm btn-outline-primary mt-2" (click)="addFaqSection()">Add Section</button>
+        <button
+          class="btn btn-sm btn-outline-primary mt-2"
+          (click)="addFaqSection()"
+        >
+          Add Section
+        </button>
       </div>
+
+
 
 
 

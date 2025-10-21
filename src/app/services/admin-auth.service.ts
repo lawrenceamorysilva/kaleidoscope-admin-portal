@@ -21,28 +21,20 @@ export class AdminAuthService {
   loginError$ = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
-    // Try to restore session
+    // Try to restore session from localStorage
     const token = localStorage.getItem('adminToken');
     const storedUser = localStorage.getItem('adminUser');
 
     if (token && storedUser) {
       this.currentUser = { ...JSON.parse(storedUser), token };
-    } else if (token) {
-      // Token exists but no user info → try fetching from backend
-      this.fetchCurrentUser();
     }
+    // Do NOT auto-fetch /me here; let login or guarded pages fetch if needed
   }
 
-  /**
-   * Retrieve JWT token from memory or storage
-   */
   getToken(): string | null {
     return this.currentUser?.token ?? localStorage.getItem('adminToken');
   }
 
-  /**
-   * Perform login and store user + token
-   */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
     return this.http.post<{ access_token: string; user?: AdminUser }>(
       `${this.apiUrl}/login`,
@@ -51,7 +43,6 @@ export class AdminAuthService {
       tap(res => {
         const user: AdminUser = { ...res.user, token: res.access_token } as AdminUser;
         this.currentUser = user;
-
         localStorage.setItem('adminToken', res.access_token);
         localStorage.setItem('adminUser', JSON.stringify(res.user));
       }),
@@ -60,28 +51,6 @@ export class AdminAuthService {
     );
   }
 
-  /**
-   * Re-fetch user info if we have a valid token
-   */
-  fetchCurrentUser(): void {
-    const token = this.getToken();
-    if (!token) return;
-
-    this.http.get<AdminUser>(`${this.apiUrl}/me`).subscribe({
-      next: (user) => {
-        this.currentUser = { ...user, token };
-        localStorage.setItem('adminUser', JSON.stringify(user));
-      },
-      error: () => {
-        // Token invalid, clear everything
-        this.clearSession();
-      }
-    });
-  }
-
-  /**
-   * Clear all session data and emit login error if needed
-   */
   clearSession(): void {
     this.currentUser = null;
     localStorage.removeItem('adminToken');
@@ -92,36 +61,16 @@ export class AdminAuthService {
     this.loginError$.next('Your session has expired. Please log in again.');
   }
 
-  /**
-   * Logout — if force=true, skip backend call
-   */
-  logout(force = false): Observable<any> | void {
-    const token = this.getToken();
-
-    // Skip backend logout if no token or force mode
-    if (force || !token) {
-      this.clearSession();
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    return this.http.post(`${this.apiUrl}/logout`, {}).pipe(
-      tap(() => {
-        this.clearSession();
-        this.router.navigate(['/login']);
-      }),
-      catchError(() => {
-        // Fallback cleanup on error
-        this.clearSession();
-        this.router.navigate(['/login']);
-        return of(null);
-      })
-    );
+  logout(): void {
+    this.clearSession();
+    this.router.navigate(['/login']);
   }
 
-  /**
-   * Simple JWT expiry check
-   */
+  isLoggedIn(): boolean {
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
   isTokenExpired(token: string): boolean {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -129,13 +78,5 @@ export class AdminAuthService {
     } catch {
       return true;
     }
-  }
-
-  /**
-   * Check current login state
-   */
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
   }
 }
