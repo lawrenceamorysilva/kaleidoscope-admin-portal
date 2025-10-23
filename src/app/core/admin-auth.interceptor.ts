@@ -2,7 +2,7 @@ import {
   HttpInterceptorFn,
   HttpRequest,
   HttpHandlerFn,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -10,59 +10,52 @@ import { catchError, throwError } from 'rxjs';
 import { AdminAuthService } from '@app/services/admin-auth.service';
 import { environment } from '@environments/environment';
 
-export const adminAuthInterceptor: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn) => {
+export const adminAuthInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<any>,
+  next: HttpHandlerFn
+) => {
   const auth = inject(AdminAuthService);
   const router = inject(Router);
-
-  let clonedReq = req;
   const token = auth.getToken();
 
+  let clonedReq = req;
+  const apiBase = environment.apiUrl.toLowerCase();
+  const isStaging = apiBase.includes('staging-api.kaleidoscope.com.au');
+  const isLive = apiBase.includes('api.kaleidoscope.com.au');
+
   if (token) {
-    const apiUrl = environment.apiUrl.toLowerCase();
+    const method = req.method.toUpperCase();
 
-    // ✅ Shared-host / staging / live: use query or body injection
-    if (apiUrl.includes('staging-api') || apiUrl.includes('api.kaleidoscope.com.au')) {
-      const method = req.method.toUpperCase();
-
+    // ✅ Staging / Live — use api_token param
+    if (isStaging || isLive) {
       if (method === 'GET' || method === 'HEAD') {
-        // 🔹 For GET requests — append as query param
-        const url = new URL(req.url, window.location.origin);
+        const url = new URL(req.url, apiBase);
         url.searchParams.set('api_token', token);
         clonedReq = req.clone({ url: url.toString() });
+      } else if (req.body instanceof FormData) {
+        const newBody = req.body;
+        newBody.append('api_token', token);
+        clonedReq = req.clone({ body: newBody });
       } else {
-        // 🔹 For POST / PUT / PATCH / DELETE — inject into body
-        let newBody: any;
-
-        if (req.body instanceof FormData) {
-          // Handle FormData (append)
-          newBody = req.body;
-          newBody.append('api_token', token);
-        } else {
-          // Handle JSON body
-          newBody = { ...req.body, api_token: token };
-        }
-
+        const newBody = { ...(req.body || {}), api_token: token };
         clonedReq = req.clone({ body: newBody });
       }
     } else {
-      // ✅ Local/dev: use standard Authorization header
+      // ✅ Local — use Authorization header
       clonedReq = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` }
+        setHeaders: { Authorization: `Bearer ${token}` },
       });
     }
   }
 
-  // ✅ Global 401 handling
   return next(clonedReq).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401) {
-        console.warn('401 detected — admin auto-logout triggered.');
         auth.clearSession();
         setTimeout(() => {
           router.navigate(['/login'], { queryParams: { expired: '1' } });
         }, 50);
       }
-
       return throwError(() => err);
     })
   );
