@@ -16,8 +16,6 @@ export class AdminLoginComponent implements OnInit {
   password = '';
   loading = false;
   error: string | null = null;
-
-  // ✅ Add this to match your template
   showPassword = false;
 
   constructor(
@@ -26,7 +24,6 @@ export class AdminLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Only show messages; do not clear session automatically
     const msg = localStorage.getItem('loginRequiredMessage');
     if (msg) {
       this.error = msg;
@@ -35,7 +32,7 @@ export class AdminLoginComponent implements OnInit {
 
     const expired = localStorage.getItem('sessionExpired');
     if (expired) {
-      this.error = 'Your session has expired. Please log in again.';
+      this.error = '⚠️ Your session has expired. Please log in again.';
       localStorage.removeItem('sessionExpired');
     }
   }
@@ -55,17 +52,25 @@ export class AdminLoginComponent implements OnInit {
         next: (res) => {
           this.loading = false;
 
+          if (!res) {
+            this.error = 'Invalid login credentials.';
+            return;
+          }
+
+          // ✅ Clear old flags and redirect
           localStorage.removeItem('loginRequiredMessage');
           localStorage.removeItem('sessionExpired');
 
           const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
           localStorage.removeItem('redirectAfterLogin');
 
+          const expiry = this.adminAuth.getExpiry();
+          console.log(`🔐 Admin login successful — token expires at: ${expiry}`);
+
           this.router.navigateByUrl(redirectUrl, { replaceUrl: true });
         },
         error: (err) => {
           this.loading = false;
-
           this.error = err?.error?.message || 'Login failed. Please try again.';
         }
       });

@@ -17,34 +17,32 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot
   ): boolean | UrlTree {
     const token = this.adminAuth.getToken();
+    const expiry = this.adminAuth.getExpiry();
 
-    // 🚫 No token = not logged in or session expired
-    if (!token) {
+    // 🚫 No token or expiry means not logged in
+    if (!token || !expiry) {
       this.handleUnauthorized(state.url);
       return this.router.parseUrl('/login');
     }
 
-    // ✅ Optionally: check for token validity (expired/invalid)
-    if (this.adminAuth.isTokenExpired(token)) {
+    // 🚫 Token expired — clear and redirect
+    if (this.adminAuth.isTokenExpired()) {
       this.handleSessionExpired(state.url);
       return this.router.parseUrl('/login');
     }
 
+    // ✅ Token is valid
     return true;
   }
 
-  /**
-   * Handles generic unauthorized access (no token)
-   */
+  /** Handles missing/unauthorized token */
   private handleUnauthorized(redirectUrl: string): void {
     this.adminAuth.clearSession();
     localStorage.setItem('loginRequiredMessage', 'Please log in to continue.');
     localStorage.setItem('redirectAfterLogin', redirectUrl);
   }
 
-  /**
-   * Handles expired session with a clear user message
-   */
+  /** Handles session expiry */
   private handleSessionExpired(redirectUrl: string): void {
     this.adminAuth.clearSession();
     localStorage.setItem('sessionExpired', '1');

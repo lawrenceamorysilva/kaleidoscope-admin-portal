@@ -16,32 +16,36 @@ export interface AdminUser {
 
 @Injectable({ providedIn: 'root' })
 export class AdminAuthService {
-  // Matches Laravel route: /api/auth/admin/login
   private authUrl = `${environment.apiUrl}/auth/admin`;
-  // Matches protected routes under /api/admin/...
   private adminUrl = `${environment.apiUrl}/admin`;
 
   currentUser: AdminUser | null = null;
   loginError$ = new BehaviorSubject<string | null>(null);
 
   constructor(private http: HttpClient, private router: Router) {
-    // Try to restore session from localStorage
+    // Restore session if available
     const token = localStorage.getItem('adminToken');
     const storedUser = localStorage.getItem('adminUser');
+    const expiry = localStorage.getItem('adminTokenExpiry');
 
-    if (token && storedUser) {
+    if (token && storedUser && expiry) {
       this.currentUser = { ...JSON.parse(storedUser), token };
     }
   }
 
-  /** Get token from memory or localStorage */
+  /** Get stored token */
   getToken(): string | null {
     return this.currentUser?.token ?? localStorage.getItem('adminToken');
   }
 
+  /** Get expiry timestamp */
+  getExpiry(): string | null {
+    return localStorage.getItem('adminTokenExpiry');
+  }
+
   /** Admin login */
   login(credentials: { email: string; password: string }): Observable<AdminUser | null> {
-    return this.http.post<{ token: string; user: AdminUser }>(
+    return this.http.post<{ token: string; expires_at: string; user: AdminUser }>(
       `${this.authUrl}/login`,
       credentials
     ).pipe(
@@ -51,26 +55,29 @@ export class AdminAuthService {
 
         localStorage.setItem('adminToken', res.token);
         localStorage.setItem('adminUser', JSON.stringify(res.user));
+        localStorage.setItem('adminTokenExpiry', res.expires_at);
       }),
       map(res => ({ ...res.user, token: res.token } as AdminUser)),
       catchError(() => of(null))
     );
   }
 
-  /** Clears session and redirects to login */
+  /** Clears session and resets flags */
   clearSession(): void {
     this.currentUser = null;
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminTokenExpiry');
     localStorage.removeItem('redirectAfterLogin');
     localStorage.removeItem('loginRequiredMessage');
     localStorage.removeItem('sessionExpired');
     this.loginError$.next('Your session has expired. Please log in again.');
   }
 
-  /** Logs out locally + optionally via API */
+  /** Logs out locally and via API (if possible) */
   logout(): void {
     const token = this.getToken();
+
     if (token) {
       this.http.post(`${this.adminUrl}/logout`, {}, {
         headers: { Authorization: `Bearer ${token}` }
@@ -85,20 +92,17 @@ export class AdminAuthService {
     this.router.navigate(['/login']);
   }
 
-  /** Simple token existence + expiration check */
+  /** Checks if user is logged in (token + valid expiry) */
   isLoggedIn(): boolean {
     const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
+    return !!token && !this.isTokenExpired();
   }
 
-  /** Checks if JWT-style token expired (if timestamped) */
-  isTokenExpired(token: string): boolean {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 < Date.now();
-    } catch {
-      // If not JWT format, treat as non-expiring hybrid token
-      return false;
-    }
+  /** Checks if expiry date is past current time */
+  isTokenExpired(): boolean {
+    const expiry = this.getExpiry();
+    if (!expiry) return true;
+    const expiryDate = new Date(expiry);
+    return expiryDate.getTime() < Date.now();
   }
 }
