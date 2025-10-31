@@ -23,6 +23,15 @@ export class DropshipOrderService {
       .pipe(map(res => res.orders || []));
   }
 
+  getPendingExportCount(): Observable<number> {
+    const token = localStorage.getItem('adminToken') || '';
+    return this.http
+      .get<{ count: number }>(`${this.apiUrl}/admin/dropship-orders/pending-count`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .pipe(map(res => res.count || 0));
+  }
+
 
 
   /**

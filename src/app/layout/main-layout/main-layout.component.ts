@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AdminAuthService } from '@app/services/admin-auth.service';
+import { DropshipOrderService } from '@app/services/dropship-order.service';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
@@ -12,8 +14,26 @@ import { AdminAuthService } from '@app/services/admin-auth.service';
 })
 export class MainLayoutComponent {
   sidebarOpen = false;
+  pendingCount = 0;
 
-  constructor(private adminAuthService: AdminAuthService) {}
+  constructor(
+    private adminAuthService: AdminAuthService,
+    private dropshipOrderService: DropshipOrderService
+  ) {}
+
+  ngOnInit(): void {
+    this.fetchPendingCount();
+
+    // Auto-refresh every 2 hours (2 hours = 7,200,000 ms)
+    interval(7200000).subscribe(() => this.fetchPendingCount());
+  }
+
+  private fetchPendingCount(): void {
+    this.dropshipOrderService.getPendingExportCount().subscribe({
+      next: (count) => (this.pendingCount = count),
+      error: () => (this.pendingCount = 0),
+    });
+  }
 
   get currentUserName() {
     return this.adminAuthService.currentUser?.name || 'Guest';

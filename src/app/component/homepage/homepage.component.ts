@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DropshipOrderService } from '@app/services/dropship-order.service';
 import { RouterModule } from '@angular/router';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-homepage',
@@ -24,6 +25,9 @@ export class HomepageComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchOrders();
+
+    // Auto-refresh every 3 hours (3 hours = 10,800,000 ms)
+    interval(10800000).subscribe(() => this.fetchOrders());
   }
 
   private fetchOrders(): void {
