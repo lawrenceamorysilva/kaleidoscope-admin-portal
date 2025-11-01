@@ -58,6 +58,33 @@ export class HomepageComponent implements OnInit {
     return Array.from(map.values());
   }
 
+  onDeleteOrder(order: any, group: any): void {
+    order.deleting = true;
+
+    this.dropshipOrderService.updateOrderStatus(order.id, 'canceled').subscribe({
+      next: () => {
+        // ✅ Remove the order locally for instant UI feedback
+        group.orders = group.orders.filter((o: any) => o.id !== order.id);
+
+        // ✅ Trigger pending count refresh
+        this.dropshipOrderService.triggerPendingCountRefresh();
+
+        // ✅ Optional: fetch fresh list if you want full sync
+        // this.fetchOrders();
+      },
+      error: (err) => {
+        console.error('Failed to cancel order:', err);
+        alert('Failed to cancel order. Please try again.');
+      },
+      complete: () => {
+        // ✅ Reset flags
+        order.deleting = false;
+        order.confirmingDelete = false;
+      }
+    });
+  }
+
+
   toggleAll(): void {
     this.allExpanded = !this.allExpanded;
     this.groupedOrders.forEach(group => {
@@ -87,6 +114,12 @@ export class HomepageComponent implements OnInit {
         this.exportReady = true;
         this.exporting = false;
         this.showExportModal = false;
+
+        // ✅ Immediately clear all orders from UI
+        this.groupedOrders = [];
+
+        // ✅ Trigger counter refresh
+        this.dropshipOrderService.triggerPendingCountRefresh();
       },
       error: (err) => {
         console.error('Export failed:', err);
@@ -97,6 +130,7 @@ export class HomepageComponent implements OnInit {
     });
   }
 
+
   closeModal(): void {
     this.showExportModal = false;
     this.exportReady = false;
@@ -105,11 +139,17 @@ export class HomepageComponent implements OnInit {
   }
 
   downloadAndRefresh(event: Event): void {
+
+    // ✅ Immediately clear all orders from UI
+    this.groupedOrders = [];
+
+    // ✅ Trigger counter refresh
+    this.dropshipOrderService.triggerPendingCountRefresh();
+
     setTimeout(() => {
       this.exportReady = false;
       this.downloadUrl = '';
       this.showExportModal = false;
-      this.fetchOrders();
     }, 500);
   }
 

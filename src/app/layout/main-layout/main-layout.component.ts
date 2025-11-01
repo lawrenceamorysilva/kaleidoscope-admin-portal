@@ -24,9 +24,15 @@ export class MainLayoutComponent {
   ngOnInit(): void {
     this.fetchPendingCount();
 
-    // Auto-refresh every 2 hours (2 hours = 7,200,000 ms)
+    // Auto-refresh every 2 hours
     interval(7200000).subscribe(() => this.fetchPendingCount());
+
+    // 🔹 Listen to refresh triggers
+    this.dropshipOrderService.refreshPendingCount$.subscribe(() => {
+      this.fetchPendingCount();
+    });
   }
+
 
   private fetchPendingCount(): void {
     this.dropshipOrderService.getPendingExportCount().subscribe({

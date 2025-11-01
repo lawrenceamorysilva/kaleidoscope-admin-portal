@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import {map, Observable, Subject} from 'rxjs';
 import { environment } from '@environments/environment';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class DropshipOrderService {
   private apiUrl = environment.apiUrl;
+
+  public refreshPendingCount$ = new Subject<void>();
 
   constructor(private http: HttpClient) {}
 
@@ -31,6 +34,31 @@ export class DropshipOrderService {
       })
       .pipe(map(res => res.count || 0));
   }
+
+  updateOrderStatus(orderId: number, status: string) {
+    const token = localStorage.getItem('adminToken') || '';
+    const adminUserStr = localStorage.getItem('adminUser');
+    let adminUserId = null;
+
+    if (adminUserStr) {
+      const adminUser = JSON.parse(adminUserStr);
+      adminUserId = adminUser.id;
+    }
+
+    return this.http.put(
+      `${this.apiUrl}/admin/dropship-orders-admin/${orderId}`,
+      { admin_user_id: adminUserId },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  }
+
+  // 🔹 Convenience method to tell MainLayout to refresh
+  triggerPendingCountRefresh() {
+    this.refreshPendingCount$.next();
+  }
+
 
 
 

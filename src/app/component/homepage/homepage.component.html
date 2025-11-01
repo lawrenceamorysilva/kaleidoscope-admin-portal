@@ -1,28 +1,23 @@
 <div class="exporter-container">
   <div class="page-header">
-    <h2 style="color:#6bb742;">New Orders (not yet exported)</h2>
+    <h2>New Orders (not yet exported)</h2>
     <div class="header-actions">
-      <button
-        class="toggle-all-btn"
-        (click)="toggleAll()"
-        [disabled]="groupedOrders.length === 0">
+      <button class="toggle-all-btn" (click)="toggleAll()" [disabled]="groupedOrders.length === 0">
         {{ allExpanded ? 'Collapse All' : 'Expand All' }}
       </button>
-
-      <button
-        class="export-btn"
-        (click)="onExport()"
-        [disabled]="groupedOrders.length === 0">
+      <button class="export-btn" (click)="onExport()" [disabled]="groupedOrders.length === 0">
         Export Orders
       </button>
     </div>
   </div>
 
+  <!-- LOADING -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Loading orders...</p>
   </div>
 
+  <!-- MAIN ORDER GROUPS -->
   <ng-container *ngIf="!loading && groupedOrders.length > 0">
     <div *ngFor="let group of groupedOrders" class="retailer-group" [class.expanded]="group.expanded">
       <div class="retailer-header" (click)="group.expanded = !group.expanded">
@@ -30,23 +25,26 @@
           <strong>{{ group.retailer }}</strong>
           <span class="order-count">({{ group.orders.length }} orders)</span>
         </div>
-        <div class="toggle-icon">{{ group.expanded ? '-' : '+' }}</div>
+        <div class="toggle-icon" [class.expanded]="group.expanded">&#8250;</div>
       </div>
 
+      <!-- CUSTOMER ORDERS -->
       <div class="retailer-orders" *ngIf="group.expanded">
         <div *ngFor="let order of group.orders" class="order-card" [class.expanded]="order.expanded">
-          <div class="order-header" (click)="order.expanded = !order.expanded">
-            <div class="order-summary">
+          <div class="order-header">
+            <div class="order-summary" (click)="order.expanded = !order.expanded">
               <div class="line-1">
                 <span *ngIf="order.po_number"><strong>PO #:</strong> {{ order.po_number }}</span>
-                <span *ngIf="order.first_name || order.last_name"><strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}</span>
+                <span *ngIf="order.first_name || order.last_name">
+        <strong>Customer:</strong> {{ order.first_name }} {{ order.last_name }}
+      </span>
               </div>
 
               <div class="line-2">
-                <span *ngIf="order.shipping_line1">
-                  <strong>Address:</strong> {{ order.shipping_line1 }}
-                  <span *ngIf="order.shipping_line2">, {{ order.shipping_line2 }}</span>
-                </span>
+      <span *ngIf="order.shipping_line1">
+        <strong>Address:</strong> {{ order.shipping_line1 }}
+        <span *ngIf="order.shipping_line2">, {{ order.shipping_line2 }}</span>
+      </span>
                 <span *ngIf="order.suburb"><strong>Suburb:</strong> {{ order.suburb }}</span>
                 <span *ngIf="order.state"><strong>State:</strong> {{ order.state }}</span>
                 <span *ngIf="order.postcode"><strong>Postcode:</strong> {{ order.postcode }}</span>
@@ -60,9 +58,56 @@
                 <span *ngIf="order.grand_total != null"><strong>Grand Total:</strong> {{ order.grand_total | currency:'USD' }}</span>
               </div>
             </div>
-            <div class="toggle-icon small">{{ order.expanded ? '-' : '+' }}</div>
+
+            <!-- RIGHT SIDE CONTROLS -->
+            <div class="order-controls">
+              <!-- Normal state -->
+              <ng-container *ngIf="!order.confirmingDelete">
+                <!-- ❌ delete first -->
+                <div
+                  class="delete-icon"
+                  title="Delete Order"
+                  (click)="order.confirmingDelete = true; $event.stopPropagation()"
+                >
+                  ×
+                </div>
+
+                <!-- › toggle second -->
+                <div
+                  class="toggle-icon small"
+                  [class.expanded]="order.expanded"
+                  (click)="order.expanded = !order.expanded; $event.stopPropagation()"
+                >
+                  &#8250;
+                </div>
+              </ng-container>
+
+              <!-- Confirm state -->
+              <ng-container *ngIf="order.confirmingDelete">
+                <div class="confirm-delete">
+                  <span>Are you sure?</span>
+                  <button
+                    class="yes-btn"
+                    (click)="onDeleteOrder(order, group); $event.stopPropagation()"
+                    [disabled]="order.deleting"
+                  >
+                    {{ order.deleting ? '...' : 'Y' }}
+                  </button>
+                  <button
+                    class="no-btn"
+                    (click)="order.confirmingDelete = false; $event.stopPropagation()"
+                    [disabled]="order.deleting"
+                  >
+                    N
+                  </button>
+                </div>
+              </ng-container>
+
+            </div>
           </div>
 
+
+          <!-- ORDER ITEMS -->
           <div class="order-items" *ngIf="order.expanded">
             <table class="items-table">
               <thead>
@@ -88,17 +133,15 @@
     </div>
   </ng-container>
 
-  <!-- Empty State: No Orders -->
+  <!-- EMPTY STATE -->
   <div *ngIf="!loading && (!groupedOrders || groupedOrders.length === 0)" class="no-history">
     <p>No New Orders to Export.</p>
     <p class="hint">
       You can <a [routerLink]="['/export-history']">view past Exports here</a>.
     </p>
   </div>
-
-
-
 </div>
+
 
 <!-- Export Modal -->
 <div class="export-modal" *ngIf="showExportModal">

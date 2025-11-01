@@ -1,21 +1,23 @@
 :host {
   display: block;
-  min-height: 100vh;
   padding: 2rem;
   font-family: "Segoe UI", sans-serif;
 
-  --bg-color: #F9FAFB;
+  /* Light mode defaults */
+  --bg-color: #f9fafb;
   --text-color: #121212;
   --card-bg: #fff;
-  --card-hover: #F1F8F4;
+  --card-hover: #f1f8f4;
+  --accent-color: #6bb742;
+  --accent-color-dark: #4a8f2a;
   --header-bg: #6bb742;
   --header-text: #fff;
-  --accent-color: #6bb742;
-  --zebra-even: #f9f9f9;
+  --border-color: #ddd;
+  --table-header-bg: #1565c0;
+  --table-header-text: #fff;
+  --zebra-even: #f3f3f3;
   --zebra-hover: #eef6ea;
-  --empty-bg: #fafafa;
-  --empty-text: #666;
-  --empty-border: #e5e5e5;
+  --order-items-bg: #f9fafb;
 
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -24,81 +26,23 @@
 @media (prefers-color-scheme: dark) {
   :host {
     --bg-color: #121212;
-    --text-color: #E0E0E0;
-
-    /* Parent vs child swap */
-    --card-bg: #242424;       /* parent darker */
-    --card-hover: #2E2E2E;
-    --sku-bg: #1E1E1E;        /* child lighter */
-    --sku-header-bg: #2E7D32; /* retailer green for SKU header */
-    --sku-row-even: #2A2A2A;
-    --sku-border: #333;
-
-    /* Greens tuned for contrast */
-    --header-bg: #2E7D32;
+    --text-color: #e0e0e0;
+    --card-bg: #242424;
+    --card-hover: #2e2e2e;
+    --accent-color: #43a047;
+    --accent-color-dark: #66bb6a;
+    --header-bg: #2e7d32;
     --header-text: #fff;
-    --toggle-btn-bg: #388E3C;
-    --toggle-btn-hover: #43A047;
-    --accent-color: #388E3C;
-
-    --zebra-even: #222;
-    --zebra-hover: #333;
-    --empty-bg: #1E1E1E;
-    --empty-text: #ccc;
-    --empty-border: #333;
-  }
-
-  /* Parent order card */
-  .order-card {
-    background-color: var(--card-bg);
-  }
-
-  /* Child SKU table wrapper */
-  .order-card .order-items {
-    background-color: var(--sku-bg);
-    border-radius: 6px;
-    padding: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .order-card .order-items .items-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: transparent;
-  }
-
-  .order-card .order-items .items-table thead {
-    background-color: var(--sku-header-bg);
-    color: var(--header-text);
-  }
-
-
-  .order-card .order-items .items-table td {
-    border-bottom: 1px solid var(--sku-border);
-    color: var(--text-color);
-    padding: 0.35rem 0.5rem;
-  }
-
-  .order-card .order-items .items-table th {
-    background-color:#1565C0; /* Kale blue */
-    color: #fff;
-    padding: 0.35rem 0.5rem;
-  }
-
-  .order-card .order-items .items-table tbody tr:nth-child(even) {
-    background-color: var(--sku-row-even);
-  }
-
-  .order-card .order-items .items-table tbody tr:hover {
-    background-color: var(--zebra-hover);
+    --border-color: #333;
+    --table-header-bg: #1e88e5;
+    --table-header-text: #fff;
+    --zebra-even: #1e1e1e;
+    --zebra-hover: #2a2a2a;
+    --order-items-bg: #1a1a1a;
   }
 }
 
-
-
-
-
-
+/* PAGE HEADER */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -116,70 +60,58 @@
     gap: 0.5rem;
 
     button {
-      font-weight: 500;
+      border: none;
       border-radius: 0.5rem;
       padding: 0.5rem 1rem;
-      border: none;
       cursor: pointer;
-      transition: all 0.2s;
-
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
+      transition: background 0.2s;
+      font-weight: 500;
 
       &.export-btn {
-        background-color: var(--accent-color);
+        background: var(--accent-color);
         color: var(--header-text);
-
-        &:hover:not(:disabled) {
-          background-color: #5ba436;
-        }
+        &:hover:not(:disabled) { background: #5ba436; }
       }
 
       &.toggle-all-btn {
-        background-color: #555;
+        background: #555;
         color: #fff;
-
-        &:hover:not(:disabled) {
-          background-color: #777;
-        }
+        &:hover:not(:disabled) { background: #777; }
       }
+
+      &:disabled { opacity: 0.6; cursor: not-allowed; }
     }
   }
 }
 
-/* Retailer Group */
+/* === RETAILER GROUP === */
 .retailer-group {
-  background-color: var(--card-bg);
+  border: 1px solid var(--accent-color);
   border-radius: 0.75rem;
   margin-bottom: 1.5rem;
+  background: var(--card-bg);
   overflow: hidden;
-  border: 1px solid var(--accent-color);
 
   .retailer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.8rem 1rem;
-    background-color: var(--accent-color);
+    background: var(--header-bg);
     color: var(--header-text);
     font-weight: 600;
+    padding: 0.8rem 1rem;
     cursor: pointer;
 
-    .retailer-summary {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .order-count {
-      font-size: 0.9rem;
-      opacity: 0.9;
-    }
-
     .toggle-icon {
-      font-size: 1.25rem;
+      font-size: 1.4rem;
+      transition: transform 0.25s ease;
+      transform-origin: center center;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .toggle-icon.expanded {
+      transform: rotate(90deg);
     }
   }
 
@@ -188,24 +120,25 @@
   }
 }
 
-/* Orders */
+/* === CUSTOMER ORDER CARD === */
 .order-card {
-  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   margin-bottom: 1rem;
-  overflow: hidden;
-  border: 1px solid #ddd;
+  background: var(--card-bg);
+  transition: background 0.2s;
 
   &.expanded {
-    background-color: var(--card-hover);
+    background: var(--card-hover);
   }
 
   .order-header {
     display: flex;
     justify-content: space-between;
-    padding: 0.8rem;
-    cursor: pointer;
+    align-items: center;
     border-bottom: 1px solid var(--accent-color);
+    padding: 0.75rem 1rem;
+    cursor: pointer;
 
     .order-summary {
       display: flex;
@@ -216,236 +149,231 @@
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
+      }
 
-        span {
-          min-width: 120px;
-        }
-
-        strong {
-          color: var(--accent-color);
-        }
+      strong {
+        color: var(--accent-color);
       }
     }
 
     .toggle-icon.small {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       color: var(--accent-color);
+      transition: transform 0.25s ease;
+      transform-origin: center center;
+      user-select: none;
+      line-height: 1;
+    }
+
+    .toggle-icon.small.expanded {
+      transform: rotate(90deg);
+      color: var(--accent-color-dark);
     }
   }
 
   .order-items {
-    padding: 0.25rem 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--order-items-bg);
+    border-radius: 0 0 0.5rem 0.5rem;
 
-    .items-table {
+    table {
       width: 100%;
       border-collapse: collapse;
 
-      th, td {
-        padding: 0.05rem 0.15rem;
-        border-bottom: 1px solid #ccc;
+      th {
+        background: var(--table-header-bg);
+        color: var(--table-header-text);
+        padding: 0.4rem;
         text-align: left;
       }
 
-      thead {
-        background-color: #1565C0;;
-        color: var(--header-text);
+      td {
+        padding: 0.4rem;
+        border-bottom: 1px solid var(--border-color);
       }
 
-      tbody tr:nth-child(even) {
-        background-color: var(--zebra-even);
-      }
-
-      tbody tr:hover {
-        background-color: var(--zebra-hover);
-      }
+      tbody tr:nth-child(even) { background: var(--zebra-even); }
+      tbody tr:hover { background: var(--zebra-hover); }
     }
   }
 }
 
-.loading {
-  text-align: center;
-  color: #6B7280;
-  font-size: 1rem;
-  padding: 2rem;
+/* === FIX FOR ALL ARROWS === */
+.toggle-icon {
+  display: inline-block;
+  line-height: 1;
+  font-weight: bold;
+  /* Works with both ▶ and › safely */
+  font-family: "Segoe UI Symbol", "Arial", sans-serif;
 }
 
-.empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--empty-text);
-  font-size: 1.1rem;
-  background: var(--empty-bg);
-  border: 1px solid var(--empty-border);
-  border-radius: 10px;
-  margin: 20px auto;
-  max-width: 400px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+.order-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-left: 0.5rem;
+
+  .delete-icon {
+    color: #d32f2f; /* Kale red */
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    line-height: 1;
+
+    &:hover {
+      color: #b71c1c;
+      transform: scale(1.2);
+    }
+  }
+
+  .confirm-delete {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+
+    span {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    .yes-btn, .no-btn {
+      border: none;
+      border-radius: 0.25rem;
+      padding: 0.15rem 0.45rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .yes-btn {
+      background: #d32f2f;
+      color: #fff;
+
+      &:hover { background: #b71c1c; }
+    }
+
+    .no-btn {
+      background: #999;
+      color: #fff;
+
+      &:hover { background: #777; }
+    }
+  }
+
+  .toggle-icon.small {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    transition: transform 0.25s ease;
+    transform-origin: center center;
+    user-select: none;
+    line-height: 1;
+
+    &.expanded {
+      transform: rotate(90deg);
+      color: var(--accent-color-dark);
+    }
+  }
 }
 
-/* Modal + Progress */
+
+
+/* === EXPORT MODAL === */
 .export-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.5); /* semi-transparent overlay */
   display: flex;
-  align-items: center;
   justify-content: center;
-  z-index: 999;
+  align-items: center;
+  z-index: 9999;
 
   .modal-content {
     background: var(--card-bg);
     color: var(--text-color);
     padding: 2rem;
     border-radius: 0.75rem;
-    min-width: 320px;
-    max-width: 90%;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+
+    p {
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+    }
 
     .modal-actions {
-      margin-top: 1.5rem;
       display: flex;
       justify-content: center;
       gap: 1rem;
-    }
 
-    .btn-no {
-      background-color: #f3f3f3;
-      color: #333;
-      border-radius: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #ccc;
-      }
-    }
-
-    .btn-yes, .btn-download {
-      background-color: var(--accent-color);
-      color: #fff;
-      border-radius: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #5ba436;
-      }
-    }
-  }
-}
-
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: var(--accent-color);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.progress-bar {
-  width: 80%;
-  max-width: 300px;
-  height: 6px;
-  background: #eee;
-  border-radius: 4px;
-  overflow: hidden;
-  margin: 10px auto;
-}
-
-.progress-fill {
-  width: 40%;
-  height: 100%;
-  background: var(--accent-color);
-  animation: progressMove 1.5s linear infinite;
-}
-
-@keyframes progressMove {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(250%); }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .order-card .order-summary .line-1,
-  .order-card .order-summary .line-2,
-  .order-card .order-summary .line-3 {
-    flex-direction: column;
-    gap: 0.5rem;
-
-    span { min-width: 0; }
-  }
-
-  .order-items { overflow-x: auto; }
-
-  .items-table th, .items-table td {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .header-actions {
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-}
-
-
-.empty-state {
-  text-align: center;
-  padding: 2rem;
-  border: 2px dashed var(--color-primary);
-  border-radius: 10px;
-  background: var(--bg-panel-light);
-  color: var(--text-primary-light);
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  transition: background 0.3s ease;
-
-  p {
-    margin: 0.3rem 0;
-  }
-
-  .hint {
-    font-size: 0.85rem;
-    color: var(--text-secondary-light);
-
-    a {
-      color: var(--color-accent);
-      font-weight: 600;
-      text-decoration: none;
-      transition: color 0.2s;
-
-      &:hover {
-        color: var(--color-primary);
-      }
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: var(--bg-panel-dark);
-    color: var(--text-primary-dark);
-    border-color: var(--color-primary);
-
-    .hint {
-      color: var(--text-secondary-dark);
-
-      a {
-        color: #1565C0;
+      button, a {
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
         text-decoration: none;
-
-        &:hover {
-          color: var(--color-primary);
-        }
+        display: inline-block;
+        color: var(--header-text);
       }
+
+      .btn-no {
+        background: #999;
+        &:hover { background: #777; }
+      }
+
+      .btn-yes {
+        background: var(--accent-color);
+        &:hover { background: var(--accent-color-dark); }
+      }
+
+      .btn-download {
+        background: var(--accent-color);
+        &:hover { background: var(--accent-color-dark); }
+      }
+    }
+
+    .progress-bar {
+      height: 0.5rem;
+      background: var(--zebra-even);
+      border-radius: 0.25rem;
+      overflow: hidden;
+      margin: 1rem 0;
+
+      .progress-fill {
+        width: 100%;
+        height: 100%;
+        background: var(--accent-color);
+        animation: progressAnim 1.5s linear infinite;
+      }
+    }
+
+    @keyframes progressAnim {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+  }
+}
+
+/* DARK MODE for modal */
+@media (prefers-color-scheme: dark) {
+  .export-modal {
+    .modal-content {
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    .progress-bar .progress-fill {
+      background: var(--accent-color);
     }
   }
 }
@@ -493,4 +421,3 @@
     }
   }
 }
-
