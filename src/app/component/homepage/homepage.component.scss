@@ -421,3 +421,155 @@
     }
   }
 }
+
+
+/* === GLOBAL PAGE LOADER (Refined / Semi-Transparent) === */
+.page-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.4); /* lighter, more transparent */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px); /* softer blur for less visual weight */
+  transition: opacity 0.3s ease;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(0, 0, 0, 0.4); /* also lighter for dark mode */
+  }
+}
+
+/* 🔹 Spinner */
+.page-spinner {
+  border: 5px solid rgba(0, 0, 0, 0.1); /* softer neutral ring */
+  border-top: 5px solid var(--accent-color);
+  border-radius: 50%;
+  width: 46px;
+  height: 46px;
+  animation: spin 1s linear infinite;
+  opacity: 0.85; /* not fully opaque, blends nicely */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* === MINI SPINNER (DELETE) === */
+.mini-spinner {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+/* === TOAST NOTIFICATION (Fixed) === */
+.toast-notification {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1055;
+}
+
+/* 🔹 Toast Content */
+.toast-content {
+  background-color: #28a745; /* Default: Success Green */
+  color: #fff;
+  padding: 0.9rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInOut 2.5s ease forwards;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 🔹 Variants */
+.toast-success {
+  background-color: #28a745;
+}
+
+.toast-error {
+  background-color: #dc3545;
+}
+
+.toast-warning {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.toast-info {
+  background-color: #17a2b8;
+}
+
+/* 🔹 Animation (fade in + fade out) */
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  10%, 90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+
+/* 🔹 Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.yes-btn {
+  position: relative;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.yes-btn.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+

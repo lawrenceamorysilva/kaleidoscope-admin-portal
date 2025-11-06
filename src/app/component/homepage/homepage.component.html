@@ -85,14 +85,20 @@
               <!-- Confirm state -->
               <ng-container *ngIf="order.confirmingDelete">
                 <div class="confirm-delete">
-                  <span>Are you sure?</span>
+                  <span>Are you sure you want to remove this order?</span>
                   <button
                     class="yes-btn"
-                    (click)="onDeleteOrder(order, group); $event.stopPropagation()"
+                    (click)="onDeleteOrderWithFade(order, group, $event)"
                     [disabled]="order.deleting"
+                    [ngClass]="{ 'fade-out': order.fadeOut }"
                   >
-                    {{ order.deleting ? '...' : 'Y' }}
+                    <ng-container *ngIf="!order.deleting; else deletingTpl">Y</ng-container>
+                    <ng-template #deletingTpl>
+                      <span class="spinner"></span>
+                    </ng-template>
                   </button>
+
+
                   <button
                     class="no-btn"
                     (click)="order.confirmingDelete = false; $event.stopPropagation()"
@@ -171,6 +177,20 @@
     </ng-container>
   </div>
 </div>
+
+
+<!-- GLOBAL PAGE SPINNER -->
+<div *ngIf="loading" class="page-loader-overlay">
+  <div class="page-spinner"></div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div *ngIf="showToast" class="toast-notification">
+  <div class="toast-content toast-success">
+    Order successfully removed
+  </div>
+</div>
+
 
 
 

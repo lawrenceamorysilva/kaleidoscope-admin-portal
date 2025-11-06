@@ -20,6 +20,7 @@ export class HomepageComponent implements OnInit {
   exporting = false;
   exportReady = false;
   downloadUrl?: string;
+  showToast = false;
 
   constructor(private dropshipOrderService: DropshipOrderService) {}
 
@@ -71,6 +72,7 @@ export class HomepageComponent implements OnInit {
 
         // ✅ Optional: fetch fresh list if you want full sync
         // this.fetchOrders();
+        this.showSuccessToast();
       },
       error: (err) => {
         console.error('Failed to cancel order:', err);
@@ -83,6 +85,34 @@ export class HomepageComponent implements OnInit {
       }
     });
   }
+
+  private showSuccessToast(): void {
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 2500); // toast disappears after 2.5s
+  }
+
+  onDeleteOrderWithFade(order: any, group: any, event: Event): void {
+    event.stopPropagation();
+    order.deleting = true;
+
+    // Call the original delete method (synchronous or void)
+    this.onDeleteOrder(order, group);
+
+    // Then trigger fade-out slightly after for visual smoothness
+    setTimeout(() => {
+      order.fadeOut = true;
+
+      setTimeout(() => {
+        const idx = group.orders.indexOf(order);
+        if (idx > -1) group.orders.splice(idx, 1);
+      }, 300); // fade duration
+    }, 300); // delay to allow spinner visibility
+  }
+
+
+
 
 
   toggleAll(): void {
