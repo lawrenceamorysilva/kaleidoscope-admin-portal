@@ -26,6 +26,7 @@ export class MainLayoutComponent {
 
     // Auto-refresh every 2 hours
     interval(7200000).subscribe(() => this.fetchPendingCount());
+    //interval(150000).subscribe(() => this.fetchPendingCount()); //2.5mins for testing only!
 
     // 🔹 Listen to refresh triggers
     this.dropshipOrderService.refreshPendingCount$.subscribe(() => {

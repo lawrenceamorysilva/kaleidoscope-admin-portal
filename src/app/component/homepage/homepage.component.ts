@@ -29,6 +29,7 @@ export class HomepageComponent implements OnInit {
 
     // Auto-refresh every 3 hours (3 hours = 10,800,000 ms)
     interval(10800000).subscribe(() => this.fetchOrders());
+    //interval(150000).subscribe(() => this.fetchOrders()); //for testing only 2.5mins.
   }
 
   private fetchOrders(): void {
