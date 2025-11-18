@@ -34,8 +34,9 @@
             <div class="order-summary" (click)="toggleOrder(order.id)">
               <span>{{ order.username }}</span>
               <span *ngIf="order.po_number">| PO #{{ order.po_number }}</span>
-              <span>| Total: ${{ order.grand_total }}</span>
-              <span>| Shipping: ${{ order.shipping_total }}</span>
+              <span> | Total: ${{ order.grand_total }}</span>
+              <span> | Shipping: ${{ order.shipping_total }}</span>
+              <span> | Updated: {{ order.updated_at | date:'dd MMM yyyy, h:mm a' }}</span>
               <span class="toggle-icon">{{ expandedOrders[order.id] ? '▲' : '▼' }}</span>
             </div>
 
