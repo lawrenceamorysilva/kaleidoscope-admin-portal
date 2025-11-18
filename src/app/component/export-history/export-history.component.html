@@ -36,7 +36,7 @@
               <span *ngIf="order.po_number">| PO #{{ order.po_number }}</span>
               <span> | Total: ${{ order.grand_total }}</span>
               <span> | Shipping: ${{ order.shipping_total }}</span>
-              <span> | Updated: {{ order.updated_at | date:'dd MMM yyyy, h:mm a' }}</span>
+              <span> | Date: {{ order.updated_at | date:'dd MMM yyyy, h:mm a' }}</span>
               <span class="toggle-icon">{{ expandedOrders[order.id] ? '▲' : '▼' }}</span>
             </div>
 
