@@ -22,8 +22,14 @@
     <div *ngFor="let group of groupedOrders" class="retailer-group" [class.expanded]="group.expanded">
       <div class="retailer-header" (click)="group.expanded = !group.expanded">
         <div class="retailer-summary">
-          <strong>{{ group.retailer }}</strong>
-          <span class="order-count">({{ group.orders.length }} orders)</span>
+          <strong class="me-2">{{ group.retailer }}</strong>
+          <span class="order-count">
+            {{
+            group.orders.length === 0
+              ? '(No orders)'
+              : '(' + group.orders.length + ' order' + (group.orders.length === 1 ? '' : 's') + ')'
+            }}
+          </span>
         </div>
         <div class="toggle-icon" [class.expanded]="group.expanded">&#8250;</div>
       </div>

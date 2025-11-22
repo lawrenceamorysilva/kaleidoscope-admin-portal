@@ -51,7 +51,7 @@ export class HomepageComponent implements OnInit {
   private groupByRetailer(orders: any[]): any[] {
     const map = new Map<string, any>();
     for (const order of orders) {
-      const retailer = order.username || 'Unknown Retailer';
+      const retailer = order.bill_company || 'Unknown Retailer';
       if (!map.has(retailer)) {
         map.set(retailer, { retailer, expanded: true, orders: [] });
       }
