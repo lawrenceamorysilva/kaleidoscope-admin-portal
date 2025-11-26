@@ -61,7 +61,7 @@
                 <span *ngIf="order.dropship_fee != null"><strong>Dropship Fee:</strong> {{ order.dropship_fee | currency:'USD' }}</span>
                 <span *ngIf="order.min_order_fee != null"><strong>Min Order Fee:</strong> {{ order.min_order_fee | currency:'USD' }}</span>
                 <span *ngIf="order.shipping_total != null"><strong>Shipping:</strong> {{ order.shipping_total | currency:'USD' }}</span>
-                <span *ngIf="order.grand_total != null"><strong>Grand Total:</strong> {{ order.grand_total | currency:'USD' }}</span>
+                <span *ngIf="order.grand_total != null"><strong>Total (excl. GST):</strong> {{ order.grand_total | currency:'USD' }}</span>
                 <span *ngIf="order.updated_at != null"><strong>Date:</strong> {{ order.updated_at | date:'dd MMM yyyy, h:mm a' }}</span>
               </div>
             </div>

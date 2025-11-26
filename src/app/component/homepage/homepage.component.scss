@@ -573,3 +573,35 @@
 }
 
 
+
+/* Desktop-only table widths */
+/* Only apply desktop widths */
+@media (min-width: 1024px) {
+  .order-items table {
+    table-layout: fixed; /* forces consistent column widths */
+    width: 100%;
+  }
+
+  .order-items table th:nth-child(1),
+  .order-items table td:nth-child(1) { /* SKU */
+    width: 120px;
+  }
+
+  .order-items table th:nth-child(2),
+  .order-items table td:nth-child(2) { /* Name */
+    width: auto; /* take remaining space */
+  }
+
+  .order-items table th:nth-child(3),
+  .order-items table td:nth-child(3) { /* Qty */
+    width: 450px;
+
+  }
+
+  .order-items table th:nth-child(4),
+  .order-items table td:nth-child(4) { /* Price */
+    width: 400px;
+
+  }
+}
+
